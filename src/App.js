@@ -10,6 +10,7 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { Footer } from './components/Footer'
 import { SignInModal } from './components/SignInModal'
 
+
 const theme = createTheme({
   palette: {
     primary: {
