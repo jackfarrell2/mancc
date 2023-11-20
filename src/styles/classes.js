@@ -1,7 +1,8 @@
 import * as colors from './colors'
 
 const page = {
-  minHeight: '100vh'
+  minHeight: '100vh',
+  margin: '40px'
 }
 
 const signInModal = {

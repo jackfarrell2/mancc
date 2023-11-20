@@ -4,7 +4,7 @@ import '../styles/table.css';
 
 
 
-function StatTable({golfer_data}) {
+function MinimizedStatTable({golfer_data}) {
 
     const data = golfer_data
     const columns = React.useMemo(() => [
@@ -28,46 +28,6 @@ function StatTable({golfer_data}) {
             Header: "Best Score",
             accessor: "Best Score",
         },
-        {
-            Header: "Birdies Per",
-            accessor: "Birdies Per",
-        },
-        {
-            Header: "Pars Per",
-            accessor: "Pars Per",
-        },
-        {
-            Header: "Bogeys Per",
-            accessor: "Bogeys Per",
-        },
-        {
-            Header: "Doubles Per",
-            accessor: "Doubles Per",
-        },
-        {
-            Header: "Triples Per",
-            accessor: "Triples Per",
-        },
-        {
-            Header: "Maxes Per",
-            accessor: "Maxes Per",
-        },
-        {
-            Header: "Par 3 Avg",
-            accessor: "Par 3 Avg",
-        },
-        {
-            Header: "Par 4 Avg",
-            accessor: "Par 4 Avg",
-        },
-        {
-            Header: "Par 5 Avg",
-            accessor: "Par 5 Avg",
-        },
-        {
-            Header: "Eagles",
-            accessor: "Eagles",
-        },
     ], [])
     
     const tableInstance = useTable({
@@ -76,6 +36,7 @@ function StatTable({golfer_data}) {
     }, useSortBy)
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
+
     return (
         <div>
             <table className="main-table" {...getTableProps()}>
@@ -116,4 +77,4 @@ function StatTable({golfer_data}) {
 }
     
 
-export {StatTable}
+export {MinimizedStatTable}
