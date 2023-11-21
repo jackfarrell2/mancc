@@ -1,0 +1,33 @@
+.indicator-box {
+    width: 10px;
+    height: 10px;
+    border: solid 1px grey;
+    float: left;
+    margin-bottom: 1px;
+    margin-right: 4px;
+}
+
+.birdie-box {
+    background-color: #95ef86;
+}
+
+.par-box {
+    background-color: #fceb9e;
+
+}
+
+.double-bogey-box {
+    background-color: #ff8f8f;
+}
+
+.triple-or-worse-box {
+    background-color: #caadc5;
+}
+
+.tableContainer {
+    background-color: #1E1F25;
+    border-radius: 20px;
+    height: 244px;
+    padding: 0 10px 10px 10px;
+    overflow: scroll;
+}

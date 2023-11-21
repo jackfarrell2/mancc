@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Grid, useMediaQuery } from "@mui/material"
+import { Box, Grid, useMediaQuery, Pagination } from "@mui/material"
 import { page } from '../styles/classes'
 import { StatTable } from '../components/StatTable'
 import { LoadingSpinner } from '../components/LoadingSpinner'
@@ -13,6 +13,7 @@ function Golfers() {
     const [golfers, setGolfers] = React.useState(null)
     const [golfer, setGolfer] = React.useState('Nick')
     const [scorecards, setScorecards] = React.useState(null)
+    const [scorecard, setScorecard] = React.useState(0)
 
      const URL = `http://127.0.0.1:8000/api/golfer/${golfer}`
     
@@ -20,7 +21,8 @@ function Golfers() {
         const fetchData = async () => {
             const result = await fetch(URL)
             result.json().then(json => {
-                setScorecards(json.scorecards[0])
+                setScorecards(json.scorecards)
+                setScorecard(0)
                 setData(json.stats)
                 setGolfers(json.all_golfers)
             })
@@ -32,7 +34,9 @@ function Golfers() {
         setGolfer(golfer)
     }
 
-    console.log(scorecards)
+    function handleScorecardChange(num) {
+        setScorecard(num)
+    }
 
     if (!data) {
         return (
@@ -46,10 +50,14 @@ function Golfers() {
         ) 
     } else {
         return (
-            <Box sx={page}>
-                <Grid container direction="column" justifyContent="center" alignItems="center" spacing={4}>
-                    <Grid item xs={12} alignItems="center">
-                        <GolferSelect golfer={golfer} golfers={golfers} handleChange={handleChange}/>
+            <Box display="flex" justifyContent="center" direction="column" alignItems="flex-start" sx={page}>
+                <Grid container direction="column" justifyContent="center" alignItems="center" spacing={5} width="100%">
+                    <Grid item xs={12}>
+                        <Grid container justifyContent="center" alignItems="center">
+                            <Grid item>
+                                <GolferSelect golfer={golfer} golfers={golfers} handleChange={handleChange}/>
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid item xs={12}>
                     {isMobile ? (
@@ -59,7 +67,14 @@ function Golfers() {
                     )}
                     </Grid>
                     <Grid item xs={12}>
-                        <Scorecard round={scorecards} golfer={golfer}></Scorecard>
+                        <Grid container justifyContent="center">
+                            <Grid item xs={12}>
+                                <Scorecard round={scorecards[scorecard]} golfer={golfer} handleScorecardChange={handleScorecardChange}></Scorecard>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Pagination size={isMobile ? 'small' : 'medium'} count={scorecards.length} onChange={(e, value) => setScorecard(value - 1)} color='primary' />
                     </Grid>
                 </Grid>
             </Box>
