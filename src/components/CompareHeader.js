@@ -4,24 +4,24 @@ import { GolferSelect } from './GolferSelect'
 
 function CompareHeader({golfers, golfer1, golfer2, handleChange}) {
 
-    function handleGolferOneChange(event) {
-        handleChange(event.target.value, 1)
+    function handleGolferOneChange(value) {
+        handleChange(value, 0)
     }
 
-    function handleGolferTwoChange(event) {
-        handleChange(event.target.value, 2)
+    function handleGolferTwoChange(value) {
+        handleChange(value, 1)
     }
 
     return (
         <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
             <Grid item>
-                <GolferSelect golfers={golfers} golfer={golfer1} handleGolferOneChange={handleGolferOneChange}></GolferSelect>
+                <GolferSelect golfers={golfers} golfer={golfer1} handleChange={handleGolferOneChange}></GolferSelect>
             </Grid>
             <Grid item>
                 <Typography>vs</Typography>
             </Grid>
             <Grid item>
-                <GolferSelect golfers={golfers} golfer={golfer2} handleGolferTwoChange={handleGolferTwoChange}></GolferSelect>
+                <GolferSelect golfers={golfers} golfer={golfer2} handleChange={handleGolferTwoChange}></GolferSelect>
             </Grid>
         </Grid>
     )

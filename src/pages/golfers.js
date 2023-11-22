@@ -6,6 +6,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { MinimizedStatTable } from '../components/MinimizedStatTable'
 import { GolferSelect } from '../components/GolferSelect'
 import { Scorecard } from '../components/Scorecard'
+import { Error } from '../components/Error'
 
 function Golfers() {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
@@ -14,17 +15,26 @@ function Golfers() {
     const [golfer, setGolfer] = React.useState('Nick')
     const [scorecards, setScorecards] = React.useState(null)
     const [scorecard, setScorecard] = React.useState(0)
+    const [error, setError] = React.useState({'error': false, 'message': 'No Error'})
+    const [loading, setLoading] = React.useState(false)
 
     const URL = `http://127.0.0.1:8000/api/golfer/${golfer}`
     
     React.useEffect(() => {
         const fetchData = async () => {
+            setLoading(true)
             const result = await fetch(URL)
             result.json().then(json => {
-                setScorecards(json.scorecards)
-                setScorecard(0)
-                setData(json.stats)
-                setGolfers(json.all_golfers)
+                if (json.error === true) {
+                    setError({'error': true, 'message': json.result['Message']})
+                } else {
+                    setScorecards(json.scorecards)
+                    setScorecard(0)
+                    setData(json.stats)
+                    setGolfers(json.all_golfers)
+                    setError({'error': false, 'message': 'No Error'})
+                }
+                setLoading(false)
             })
         }
         fetchData();
@@ -48,8 +58,26 @@ function Golfers() {
                 </Grid>
             </Box>
         ) 
-    } else {
-        return (
+    } else if (!error['error']) {
+        if (loading) {
+            return (
+                <Box display="flex" justifyContent="center" direction="column" alignItems="flex-start" sx={page}>
+                    <Grid container direction="column" justifyContent="center" alignItems="center" spacing={5} width="100%">
+                        <Grid item xs={12}>
+                            <Grid container justifyContent="center" alignItems="center">
+                                <Grid item>
+                                    <GolferSelect golfer={golfer} golfers={golfers} handleChange={handleChange}/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <LoadingSpinner />
+                        </Grid>
+                    </Grid>
+                </Box>
+            )
+        } else {
+            return (
             <Box display="flex" justifyContent="center" direction="column" alignItems="flex-start" sx={page}>
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={5} width="100%">
                     <Grid item xs={12}>
@@ -79,7 +107,24 @@ function Golfers() {
                 </Grid>
             </Box>
         );
-    
+        }
+    } else {
+        return(
+            <Box sx={page}>
+                <Grid container direction="column" justifyContent="center" alignItems="center" spacing={5} width="100%">
+                    <Grid item xs={12}>
+                        <Grid container justifyContent="center" alignItems="center">
+                            <Grid item>
+                                <GolferSelect golfer={golfer} golfers={golfers} handleChange={handleChange}/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Error error={error['message']}></Error>
+                    </Grid>
+                </Grid>
+            </Box>
+        )
     }
 }
 

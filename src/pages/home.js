@@ -35,7 +35,6 @@ function Home() {
             </Box>
         )
     } else {
-        console.log(data)
         return (
             <Box sx={page} justifyContent="center">
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={4}>
