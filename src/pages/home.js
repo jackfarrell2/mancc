@@ -10,7 +10,6 @@ const URL = 'http://127.0.0.1:8000/api/home'
 
 function Home() {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
-
     const [data, setData] = React.useState(null)
     const [birdies, setBirdies] = React.useState('')
 
@@ -36,10 +35,11 @@ function Home() {
             </Box>
         )
     } else {
+        console.log(data)
         return (
-            <Box sx={page}>
+            <Box sx={page} justifyContent="center">
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={4}>
-                    <Grid item xs={12} alignItems="center">
+                    <Grid item xs={12}>
                         <Typography>Current Green Jacket Holder: <strong>Nick</strong></Typography>
                     </Grid>
                     <Grid item xs={12}>

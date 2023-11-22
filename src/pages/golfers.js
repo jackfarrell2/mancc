@@ -15,7 +15,7 @@ function Golfers() {
     const [scorecards, setScorecards] = React.useState(null)
     const [scorecard, setScorecard] = React.useState(0)
 
-     const URL = `http://127.0.0.1:8000/api/golfer/${golfer}`
+    const URL = `http://127.0.0.1:8000/api/golfer/${golfer}`
     
     React.useEffect(() => {
         const fetchData = async () => {

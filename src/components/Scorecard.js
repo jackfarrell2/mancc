@@ -5,7 +5,7 @@ import { Score } from './Score'
 
 
 
-function Scorecard({round, golfer}){
+function Scorecard({variant, round, golfer, ...props}) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const courseName = round['course_name']
     const abbrev = courseName.match(/\b([A-Z])/g).join('');
@@ -44,37 +44,59 @@ function Scorecard({round, golfer}){
 
 
     // Create Strokes
-    const frontNineStrokes = round['strokes'].slice(0, 9)
-    const backNineStrokes = round['strokes'].slice(10, 19)
-    const cleanStrokes = frontNineStrokes.concat(backNineStrokes)
-    const cardStrokes = []
-    for (let i = 0; i < 18; i++) {
-        const difference = (cleanStrokes[i] - round['pars'][i])
-        let variant = 'bogey'
-        if (difference <= -1) {
-            variant = 'birdie'
-        } else if (difference === 0) {
-            variant = 'par'
-        } else if (difference === 2) {
-            variant = 'double-bogey'
-        } else if (difference >= 3) {
-            variant = 'triple-or-worse'
-        } else {
-            variant = 'bogey'
+    function createStrokes(strokes, pars) {
+        const frontNineStrokes = strokes.slice(0, 9)
+        const backNineStrokes = strokes.slice(10, 19)
+        const cleanStrokes = frontNineStrokes.concat(backNineStrokes)
+        const cardStrokes = []
+        for (let i = 0; i < 18; i++) {
+            const difference = (cleanStrokes[i] - pars[i])
+            let scoreVariant = 'bogey'
+            if (difference <= -1) {
+                scoreVariant = 'birdie'
+            } else if (difference === 0) {
+                scoreVariant = 'par'
+            } else if (difference === 2) {
+                scoreVariant = 'double-bogey'
+            } else if (difference >= 3) {
+                scoreVariant = 'triple-or-worse'
+            } else {
+                scoreVariant = 'bogey'
+            }
+            cardStrokes.push(<Score key={i} variant={scoreVariant} score={cleanStrokes[i]}></Score>)
         }
-        cardStrokes.push(<Score key={i} variant={variant} score={cleanStrokes[i]}></Score>)
+
+        cardStrokes.splice(9, 0, <Score key={'front-sum'} variant="sum" score={strokes[9]}></Score>)
+        cardStrokes.push(<Score key={'back-sum'} variant="sum" score={strokes[19]}></Score>)
+        cardStrokes.push(<Score key={'tot-sum'} variant="sum" score={strokes[20]}></Score>)
+
+        return cardStrokes
     }
 
-    cardStrokes.splice(9, 0, <Score key={'front-sum'} variant="sum" score={round['strokes'][9]}></Score>)
-    cardStrokes.push(<Score key={'back-sum'} variant="sum" score={round['strokes'][19]}></Score>)
-    cardStrokes.push(<Score key={'tot-sum'} variant="sum" score={round['strokes'][20]}></Score>)
+    let cardStrokes = []
+    let cardStrokesTwo = []
+    if (variant === "double") {
+        cardStrokes = createStrokes(round['strokes_one'], round['pars'])
+        cardStrokesTwo = createStrokes(round['strokes_two'], round['pars'])
+    } else {
+        cardStrokes = createStrokes(round['strokes'], round['pars'])
+    }
+
 
     // Create toPars
     const toPars = []
-    for (let i = 0; i < 21; i++) {
-        toPars.push(<TableCell key={i} sx={{fontFamily: "ink free", border: '1px solid black'}} align="center">{round['to_pars'][i]}</TableCell>)
+    const toParsTwo = []
+    if (variant === "double") {
+        for (let i = 0; i < 21; i++) {
+            toPars.push(<TableCell key={i} sx={{fontFamily: "ink free", border: '1px solid black'}} align="center">{round['to_pars_one'][i]}</TableCell>)
+            toParsTwo.push(<TableCell key={i} sx={{fontFamily: "ink free", border: '1px solid black'}} align="center">{round['to_pars_two'][i]}</TableCell>)
+        }
+    } else {
+        for (let i = 0; i < 21; i++) {
+            toPars.push(<TableCell key={i} sx={{fontFamily: "ink free", border: '1px solid black'}} align="center">{round['to_pars'][i]}</TableCell>) 
+        }
     }
-
+    
     // Create Pars
     const cardPars = []
     for (let i = 0; i < 18; i++) {
@@ -106,7 +128,7 @@ function Scorecard({round, golfer}){
                     </Grid>
                 </Grid>
             </Grid>
-            <Container maxWidth='xl' disableGutters={isMobile ? 'true' : 'false'} sx={{overflow: 'auto'}}>
+            <Container maxWidth='xl' disableGutters={isMobile ? true : false} sx={{overflow: 'auto'}}>
                 <TableContainer component={Paper} sx={{ width: "100%", display: "table", tableLayout: "fixed" }}>
                     <Table aria-label='scorecard'>
                         <TableHead>
@@ -131,6 +153,8 @@ function Scorecard({round, golfer}){
                                 <TableCell sx={{border: '1px solid black'}}>+/-</TableCell>
                                 {toPars}
                             </TableRow>
+                            {(variant === "double") && <TableRow><TableCell sx={{fontFamily: "ink free", border: '1px solid black'}}>{props.golferTwo}</TableCell>{cardStrokesTwo}</TableRow>}
+                            {(variant === "double") && <TableRow><TableCell sx={{border: '1px solid black'}}>+/-</TableCell>{toParsTwo}</TableRow>}
                             <TableRow sx={{backgroundColor: 'black'}}>
                                 <TableCell sx={{fontWeight: 'bold', color: 'white'}}>Par</TableCell>
                                 {cardPars}

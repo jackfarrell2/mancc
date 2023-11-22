@@ -14,7 +14,7 @@ function GolferSelect({golfer, golfers, handleChange}) {
     }
 
     return (
-        <FormControl fullWidth>
+        <FormControl fullWidth id="golfer-form">
             <InputLabel id="golfer-select">Golfer</InputLabel>
             <Select
                 labelId="golfer-select"

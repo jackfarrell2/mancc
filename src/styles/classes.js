@@ -2,7 +2,8 @@ import * as colors from './colors'
 
 const page = {
   minHeight: '100vh',
-  margin: '40px'
+  margin: '40px',
+  justifyContent: 'center'
 }
 
 const signInModal = {
