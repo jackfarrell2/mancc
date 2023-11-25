@@ -44,9 +44,6 @@ function Golfers() {
         setGolfer(golfer)
     }
 
-    function handleScorecardChange(num) {
-        setScorecard(num)
-    }
 
     if (!data) {
         return (
@@ -62,7 +59,7 @@ function Golfers() {
         if (loading) {
             return (
                 <Box display="flex" justifyContent="center" direction="column" alignItems="flex-start" sx={page}>
-                    <Grid container direction="column" justifyContent="center" alignItems="center" spacing={5} width="100%">
+                    <Grid container direction="column" justifyContent="center" alignItems="center" spacing={2} width="100%">
                         <Grid item xs={12}>
                             <Grid container justifyContent="center" alignItems="center">
                                 <Grid item>
@@ -79,7 +76,7 @@ function Golfers() {
         } else {
             return (
             <Box display="flex" justifyContent="center" direction="column" alignItems="flex-start" sx={page}>
-                <Grid container direction="column" justifyContent="center" alignItems="center" spacing={5} width="100%">
+                <Grid container direction="column" justifyContent="center" alignItems="center" spacing={2} width="100%">
                     <Grid item xs={12}>
                         <Grid container justifyContent="center" alignItems="center">
                             <Grid item>
@@ -97,7 +94,7 @@ function Golfers() {
                     <Grid item xs={12}>
                         <Grid container justifyContent="center">
                             <Grid item xs={12}>
-                                <Scorecard round={scorecards[scorecard]} golfer={golfer} handleScorecardChange={handleScorecardChange}></Scorecard>
+                                <Scorecard round={scorecards[scorecard]} golfer={golfer}></Scorecard>
                             </Grid>
                         </Grid>
                     </Grid>

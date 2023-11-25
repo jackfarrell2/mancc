@@ -10,7 +10,7 @@ function Error({error}) {
             <Grid item>
                 <img src={GreenJacket} width="250px" height="auto" alt="nick-green-jacket"></img>
             </Grid>
-        </Grid>
+        </Grid>  
     )
 }
 

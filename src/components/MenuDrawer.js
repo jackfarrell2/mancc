@@ -43,12 +43,6 @@ function MenuDrawer({handleOpen}) {
                     <Divider />
                     <ListItem onClick={() => setOpenDrawer(false)}>
                         <ListItemText>
-                            <Link to='/golfers' style={drawerItem}>Golfers</Link>
-                        </ListItemText>
-                    </ListItem>
-                    <Divider />
-                    <ListItem onClick={() => setOpenDrawer(false)}>
-                        <ListItemText>
                             <Link to='/postmatch' style={drawerItem}>Post a Match</Link>
                         </ListItemText>
                     </ListItem>

@@ -21,10 +21,6 @@ function MinimizedStatTable({golfer_data}) {
             accessor: "Avg Score",
         },
         {
-            Header: "Avg Par",
-            accessor: "Avg Par",
-        },
-        {
             Header: "Best Score",
             accessor: "Best Score",
         },

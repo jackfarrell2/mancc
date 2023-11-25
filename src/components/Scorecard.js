@@ -52,13 +52,13 @@ function Scorecard({variant, round, golfer, ...props}) {
         for (let i = 0; i < 18; i++) {
             const difference = (cleanStrokes[i] - pars[i])
             let scoreVariant = 'bogey'
-            if (difference <= -1) {
+            if (Math.round(difference) <= -1) {
                 scoreVariant = 'birdie'
-            } else if (difference === 0) {
+            } else if (Math.round(difference) === 0) {
                 scoreVariant = 'par'
-            } else if (difference === 2) {
+            } else if (Math.round(difference) === 2) {
                 scoreVariant = 'double-bogey'
-            } else if (difference >= 3) {
+            } else if (Math.round(difference) >= 3) {
                 scoreVariant = 'triple-or-worse'
             } else {
                 scoreVariant = 'bogey'
@@ -117,14 +117,13 @@ function Scorecard({variant, round, golfer, ...props}) {
     const day = date.getDate();
     const year = date.getFullYear();
     const formattedDate = `${month} ${day}, ${year}`
-
     return (
         <Card variant="outlined" sx={{width: isMobile ? '100%' : '100%'}}>
             <Grid container sx={{marginTop: '10px', marginBottom: '10px'}}>
                 <Grid item xs={6}><Typography sx={{marginLeft: '10px'}}>{isMobile ? abbrev : courseName}</Typography></Grid>
                 <Grid item xs={6}>
                     <Grid container justifyContent="flex-end">
-                        <Typography sx={{marginRight: '10px'}}>{formattedDate}</Typography>  
+                        <Typography sx={{marginRight: '10px'}}>{props.avgScorecard ? '' : formattedDate}</Typography>  
                     </Grid>
                 </Grid>
             </Grid>
