@@ -118,7 +118,7 @@ function Scorecard({variant, round, golfer, ...props}) {
     const year = date.getFullYear();
     const formattedDate = `${month} ${day}, ${year}`
     return (
-        <Card variant="outlined" sx={{width: isMobile ? '100%' : '100%'}}>
+        <Card variant="outlined">
             <Grid container sx={{marginTop: '10px', marginBottom: '10px'}}>
                 <Grid item xs={6}><Typography sx={{marginLeft: '10px'}}>{isMobile ? abbrev : courseName}</Typography></Grid>
                 <Grid item xs={6}>
