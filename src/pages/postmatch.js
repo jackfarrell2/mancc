@@ -1,20 +1,21 @@
 import * as React from 'react'
-import { Box, Card, Grid, useMediaQuery, TableCell, Container, TableContainer, Paper, Table, TableRow, TableBody, TableHead, FormControl, InputLabel, Select } from "@mui/material"
+import { Box, Card, Grid, useMediaQuery, TableCell, Container, TableContainer, Paper, Table, TableRow, TableBody, TableHead } from "@mui/material"
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { SubmitGolferSelect } from '../components/SubmitGolferSelect'
-import { StrokeInput } from '../components/StrokeInput'
 import { StrokeInputRow } from '../components/StrokeInputRow'
+
 
 function PostMatch() {
 
     const today = new Date()
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const defaultData = [[4,4,5,5,3,4,4,3,4,4,4,3,4,5,5,4,4,3],[13,11,3,9,17,1,5,15,7,12,14,18,6,10,4,2,8,16],[316,338,507,501,141,404,332,139,353,293,335,134,331,525,514,397,372,186]]
+    const emptyStrokes = Array(18).fill(0)
+    const defaultStrokes = Array(4).fill(emptyStrokes)
 
     const [loading, setLoading] = React.useState(false)
     const [course, setCourse] = React.useState('Manchester Country Club')
@@ -24,7 +25,8 @@ function PostMatch() {
     const [teeOptions, setTeeOptions] = React.useState(['White', 'Blue'])
     const [date, setDate] = React.useState(today)
     const [golfers, setGolfers] = React.useState(null)
-    const [currentStrokes, setCurrentStrokes] = React.useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    const [currentStrokes, setCurrentStrokes] = React.useState(defaultStrokes)
+    const [golferCount, setGolferCount] = React.useState(1)
     
     const URL = `http://127.0.0.1:8000/api/coursedata/${course}/${tee}/`
     
@@ -33,7 +35,6 @@ function PostMatch() {
         const fetchData = async () => {
             const result = await fetch(URL)
             result.json().then(json => {
-                console.log(json.course_data)
                 setCourseData(json.course_data)
                 setCourses(json.course_names)
                 setTeeOptions(json.tee_options)
@@ -75,14 +76,11 @@ function PostMatch() {
     cardHandicaps.splice(9, 0, <TableCell key={'blank3'} sx={{border: '1px solid black'}} align="center"></TableCell>)
     cardHandicaps.push(<TableCell key={'blank'} sx={{border: '1px solid black'}} align="center"></TableCell>)
     cardHandicaps.push(<TableCell key={'blank2'} sx={{border: '1px solid black'}} align="center"></TableCell>)
-    // Create Strokes
-    // const strokeInputs = []
-    // for (let i = 0; i < 18; i++) {
-    //     strokeInputs.push(<TableCell key={i} sx={{border: '1px solid black'}} align="center" size="small"><StrokeInput /></TableCell>)
-    // }
-    // strokeInputs.splice(9, 0, <TableCell key={'blank3'} sx={{border: '1px solid black'}} align="center"></TableCell>)
-    // strokeInputs.push(<TableCell key={'blank'} sx={{border: '1px solid black'}} align="center"></TableCell>)
-    // strokeInputs.push(<TableCell key={'blank2'} sx={{border: '1px solid black'}} align="center"></TableCell>)
+    // Create Stroke Input Rows
+    const strokeInputRows = []
+    for (let i = 0; i < golferCount; i++) {
+        strokeInputRows.push(<StrokeInputRow handleChange={handleStrokeChange} golferIndex={i} handleGolferCountChange={handleGolferCountChange} strokes={currentStrokes[i]} golfers={golfers} />)
+    }
     // Create Pars
     const cardPars = []
     for (let i = 0; i < 18; i++) {
@@ -102,16 +100,20 @@ function PostMatch() {
     }
 
 
-    function handleStrokeChange(stroke, index) {
-    setCurrentStrokes(prevStrokes => {
-        const currentStrokesBuffer = [...prevStrokes];
-        console.log(`stroke is ${stroke}`)
-        if (isNaN(stroke)) stroke = 0;
-        currentStrokesBuffer[index] = stroke;
-        console.log(`changing strokes state to ${currentStrokesBuffer}`);
-        return currentStrokesBuffer;
-    });
-}
+    function handleGolferCountChange(num) {
+        setGolferCount(golferCount + num)
+    }
+
+    function handleStrokeChange(stroke, index, golferIndex) {
+        console.log(stroke, index, golferIndex)
+        setCurrentStrokes(prevStrokes => {
+            const currentStrokesBuffer = prevStrokes
+            if (isNaN(stroke)) stroke = 0;
+            currentStrokesBuffer[golferIndex][index] = stroke
+            console.log(currentStrokesBuffer)
+            return currentStrokesBuffer;
+        });
+    }
 
 
     if (!courses) {
@@ -163,7 +165,7 @@ function PostMatch() {
                                         <TableCell sx={{border: '1px solid black'}}>Handicap</TableCell>
                                         {cardHandicaps}
                                     </TableRow>
-                                    <StrokeInputRow handleChange={handleStrokeChange} strokes={currentStrokes} golfers={golfers} />
+                                    {strokeInputRows}
                                     <TableRow sx={{backgroundColor: 'black'}}>
                                         <TableCell sx={{fontWeight: 'bold', color: 'white'}}>Par</TableCell>
                                         {cardPars}

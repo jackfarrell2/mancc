@@ -4,13 +4,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import '../styles/scores.css'
 
-function StrokeInput({strokes, handleChange, index}) {
+function StrokeInput({strokes, handleChange, index, golferIndex}) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     function handleFormChange(event) {
-        console.log("running change")
+        console.log("golferindex is ", golferIndex)
         let newStrokes = parseInt(event.target.value)
-        console.log(newStrokes, index)
-        handleChange(newStrokes, index)
+        handleChange(newStrokes, index, golferIndex)
     }
     if (strokes === 0) {
         return (
