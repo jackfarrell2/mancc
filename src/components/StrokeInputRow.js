@@ -2,7 +2,7 @@ import { TableCell, FormControl, TableRow } from "@mui/material"
 import { StrokeInput } from "./StrokeInput"
 import { SubmitGolferSelect } from "./SubmitGolferSelect"
 
-function StrokeInputRow({strokes =  Array(18).fill(0), golfers, handleChange, handleAdd, handleRemove, golferIndex, handleGolferChange, selectedGolfers, golferCount}) {
+function StrokeInputRow({strokes =  Array(18).fill(0), golfers, handleStrokeChange, handleChange, handleAdd, handleRemove, golferIndex, handleGolferChange, selectedGolfers, golferCount}) {
     const strokeInputs = []
     strokeInputs.push(<TableCell key="golferName" sx={{fontFamily: "ink free", border: '1px solid black', minWidth: "250px"}}><FormControl fullWidth id="golfer"><SubmitGolferSelect golferCount={golferCount} selectedGolfers={selectedGolfers} handleChange={handleGolferChange} handleAdd={handleAdd} handleRemove={handleRemove} golferIndex={golferIndex} golfers={golfers} /></FormControl></TableCell>)
     for (let i = 0; i < 18; i++) {

@@ -96,6 +96,7 @@ function PostMatch() {
         setDate(newDate)
     }
 
+
     // Create Headers
     const headers = []
     for (let i = 0; i < 18; i++) {
@@ -129,7 +130,7 @@ function PostMatch() {
     // Create Stroke Input Rows
     const strokeInputRows = []
     for (let i = 0; i < golferCount; i++) {
-        strokeInputRows.push(<StrokeInputRow key={i} selectedGolfers={selectedGolfers} handleGolferChange={handleGolferChange} handleChange={handleStrokeChange} golferIndex={i} handleAdd={handleAdd} handleRemove={handleRemove} strokes={currentStrokes[i]} golfers={golfers} golferCount={golferCount} />)
+        strokeInputRows.push(<StrokeInputRow key={i} handleStrokeChange={handleStrokeChange} selectedGolfers={selectedGolfers} handleGolferChange={handleGolferChange} handleChange={handleStrokeChange} golferIndex={i} handleAdd={handleAdd} handleRemove={handleRemove} strokes={currentStrokes[i]} golfers={golfers} golferCount={golferCount} />)
     }
     // Create Pars
     const cardPars = []
@@ -181,7 +182,7 @@ function PostMatch() {
                             <Grid container display="flex" direction='row' alignItems="center" justifyContent="center" spacing={2}>
                                 <Grid item md={9}>
                                     <Grid container direction='row' alignItems="center" justifyContent="flex-start">
-                                        <Grid item sx={!isMobile && {marginLeft: '10px'}} >
+                                        <Grid item >
                                                 <CourseSelect course={course} courses={courses} handleChange={handleCourseChange} />
                                         </Grid>
                                         <Grid item>
@@ -193,7 +194,7 @@ function PostMatch() {
                                 </Grid>
                                 <Grid item md={3}>
                                     <Grid container justifyContent="flex-end">
-                                        <Grid item >
+                                        <Grid item sx={isMobile && {pr: '45px'}}>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <DatePicker sx={{ '& .MuiInputLabel-root': { textAlign: 'right' } }} label="Date" onChange={handleDateChange} value={date}/>
                                             </LocalizationProvider>
