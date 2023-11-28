@@ -1,13 +1,12 @@
-import { TableCell, FormControl, InputLabel, TableRow } from "@mui/material"
+import { TableCell, FormControl, TableRow } from "@mui/material"
 import { StrokeInput } from "./StrokeInput"
 import { SubmitGolferSelect } from "./SubmitGolferSelect"
 
-function StrokeInputRow({strokes, golfers, handleChange, handleGolferCountChange, golferIndex}) {
-
+function StrokeInputRow({strokes =  Array(18).fill(0), golfers, handleChange, handleAdd, handleRemove, golferIndex, handleGolferChange, selectedGolfers, golferCount}) {
     const strokeInputs = []
-    strokeInputs.push(<TableCell key="golferName" sx={{fontFamily: "ink free", border: '1px solid black', minWidth: "250px"}}><FormControl fullWidth id="golfer"><SubmitGolferSelect handleGolferCountChange={handleGolferCountChange} golfers={golfers} /></FormControl></TableCell>)
+    strokeInputs.push(<TableCell key="golferName" sx={{fontFamily: "ink free", border: '1px solid black', minWidth: "250px"}}><FormControl fullWidth id="golfer"><SubmitGolferSelect golferCount={golferCount} selectedGolfers={selectedGolfers} handleChange={handleGolferChange} handleAdd={handleAdd} handleRemove={handleRemove} golferIndex={golferIndex} golfers={golfers} /></FormControl></TableCell>)
     for (let i = 0; i < 18; i++) {
-        strokeInputs.push(<TableCell key={i} golferIndex={golferIndex} sx={{border: '1px solid black'}} align="center" size="small"><StrokeInput strokes={strokes[i]} handleChange={handleChange} golferIndex={golferIndex} index={i} /></TableCell>)
+        strokeInputs.push(<TableCell key={i} sx={{border: '1px solid black'}} align="center" size="small"><StrokeInput strokes={strokes[i]} handleChange={handleChange} golferIndex={golferIndex} index={i} /></TableCell>)
     }
 
     const frontNineScores = strokes.slice(0, 9)

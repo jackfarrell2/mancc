@@ -37,7 +37,6 @@ function Courses() {
             setLoading(true)
             const result = await fetch(URL)
             result.json().then(json => {
-                console.log(json)
                 if (json.error === true) {
                     setTees(json.tees)
                     setTee(json.tees[0])

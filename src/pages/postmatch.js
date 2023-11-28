@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Card, Grid, useMediaQuery, TableCell, Container, TableContainer, Paper, Table, TableRow, TableBody, TableHead } from "@mui/material"
+import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem } from "@mui/material"
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
 import { LoadingSpinner } from '../components/LoadingSpinner'
@@ -7,6 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { StrokeInputRow } from '../components/StrokeInputRow'
+import AddIcon from '@mui/icons-material/Add'
 
 
 function PostMatch() {
@@ -20,11 +21,12 @@ function PostMatch() {
     const [loading, setLoading] = React.useState(false)
     const [course, setCourse] = React.useState('Manchester Country Club')
     const [courseData, setCourseData] = React.useState(defaultData)
-    const [tee, setTee] = React.useState('White')
     const [courses, setCourses] = React.useState(null)
     const [teeOptions, setTeeOptions] = React.useState(['White', 'Blue'])
+    const [tee, setTee] = React.useState('White')
     const [date, setDate] = React.useState(today)
     const [golfers, setGolfers] = React.useState(null)
+    const [selectedGolfers, setSelectedGolfers] = React.useState(['', '', '', ''])
     const [currentStrokes, setCurrentStrokes] = React.useState(defaultStrokes)
     const [golferCount, setGolferCount] = React.useState(1)
     
@@ -35,16 +37,64 @@ function PostMatch() {
         const fetchData = async () => {
             const result = await fetch(URL)
             result.json().then(json => {
-                setCourseData(json.course_data)
-                setCourses(json.course_names)
-                setTeeOptions(json.tee_options)
-                setGolfers(json.golfer_names)
+                if (json.error) {
+                    setTeeOptions(json.tee)
+                    setTee(json.tee[0])
+                } else {
+                    setCourseData(json.course_data)
+                    setCourses(json.course_names)
+                    setTeeOptions(json.tee_options)
+                    setGolfers(json.golfer_names)
+                }
             })
+            setLoading(false)
         }
         fetchData();
-        setLoading(false)
     }, [URL])
 
+    function handleCourseChange(course) {
+        setCourse(course)
+    }
+
+    function handleAdd(){
+        setGolferCount(golferCount + 1)
+    }
+
+
+    function handleRemove(num) {
+        const currentStrokesCopy = currentStrokes.map((row) => [...row])
+        currentStrokesCopy.splice(num, 1)
+        currentStrokesCopy.push(emptyStrokes)
+        const selectedGolfersCopy = [...selectedGolfers]
+        selectedGolfersCopy.splice(num, 1)
+        selectedGolfersCopy.push('')
+        setCurrentStrokes(currentStrokesCopy)
+        setSelectedGolfers(selectedGolfersCopy)
+        setGolferCount(golferCount - 1)
+
+
+    }
+
+    function handleStrokeChange(stroke, index, golferIndex) {
+        const currentStrokesCopy = currentStrokes.map((row) => [...row])
+        if (isNaN(stroke)) stroke = 0
+        currentStrokesCopy[golferIndex][index] = stroke
+        setCurrentStrokes(currentStrokesCopy)
+    }
+
+    function handleGolferChange(name, index) {
+        const selectedGolfersCopy = [...selectedGolfers]
+        selectedGolfersCopy[index] = name
+        setSelectedGolfers(selectedGolfersCopy)
+    }
+
+    function handleTeeChange(event) {
+        setTee(event.target.value)
+    }
+
+    function handleDateChange(newDate) {
+        setDate(newDate)
+    }
 
     // Create Headers
     const headers = []
@@ -79,7 +129,7 @@ function PostMatch() {
     // Create Stroke Input Rows
     const strokeInputRows = []
     for (let i = 0; i < golferCount; i++) {
-        strokeInputRows.push(<StrokeInputRow handleChange={handleStrokeChange} golferIndex={i} handleGolferCountChange={handleGolferCountChange} strokes={currentStrokes[i]} golfers={golfers} />)
+        strokeInputRows.push(<StrokeInputRow key={i} selectedGolfers={selectedGolfers} handleGolferChange={handleGolferChange} handleChange={handleStrokeChange} golferIndex={i} handleAdd={handleAdd} handleRemove={handleRemove} strokes={currentStrokes[i]} golfers={golfers} golferCount={golferCount} />)
     }
     // Create Pars
     const cardPars = []
@@ -95,24 +145,10 @@ function PostMatch() {
     cardPars.push(<TableCell key={'backnine'} sx={{fontWeight: 'bold', color: 'white'}} align="center">{backNineParsSum}</TableCell>)
     cardPars.push(<TableCell key={'total'} sx={{fontWeight: 'bold', color: 'white'}} align="center">{backNineParsSum + frontNineParsSum}</TableCell>)
 
-    function handleCourseChange(course) {
-        setCourse(course)
-    }
-
-
-    function handleGolferCountChange(num) {
-        setGolferCount(golferCount + num)
-    }
-
-    function handleStrokeChange(stroke, index, golferIndex) {
-        console.log(stroke, index, golferIndex)
-        setCurrentStrokes(prevStrokes => {
-            const currentStrokesBuffer = prevStrokes
-            if (isNaN(stroke)) stroke = 0;
-            currentStrokesBuffer[golferIndex][index] = stroke
-            console.log(currentStrokesBuffer)
-            return currentStrokesBuffer;
-        });
+    // Create Tee Selects
+    const teeSelects = []
+    for (let i = 0; i < teeOptions.length; i++) {
+        teeSelects.push(<MenuItem key={i} value={teeOptions[i]}>{teeOptions[i]}</MenuItem>)
     }
 
 
@@ -127,56 +163,80 @@ function PostMatch() {
             </Box>
         )
     } else {
-        return (
-            <Box display="flex" justifyContent="center" direction="column" alignItems="flex-start" sx={page}>
-                <Card variant="outlined" sx={{width: '100%'}}>
-                    <Grid container display="flex" direction='row' alignItems="center" justifyContent="center" sx={{marginTop: '10px', marginBottom: '10px'}} spacing={2}>
-                        <Grid item md={9}>
-                            <Grid container direction='row' alignItems="center" justifyContent="flex-start">
-                                <Grid item sx={!isMobile && {marginLeft: '10px'}} >
-                                     <CourseSelect course={course} courses={courses} handleChange={handleCourseChange} />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item md={3}>
-                            <Grid container justifyContent="flex-end">
-                                <Grid item>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DatePicker label="Date" defaultValue={date} sx={!isMobile && {marginRight: '10px'}} />
-                                    </LocalizationProvider>
-                                </Grid>
-                            </Grid>
+        if (loading) {
+            return (
+                <Box sx={page}>
+                    <Grid container justifyContent="center" alignItems="center">
+                        <Grid item>
+                            <LoadingSpinner />
                         </Grid>
                     </Grid>
-                     <Container maxWidth='xl' disableGutters={isMobile ? true : false} sx={{overflow: 'auto'}}>
-                        <TableContainer component={Paper} sx={{ width: "100%", display: "table", tableLayout: "fixed" }}>
-                            <Table aria-label='scorecard'>
-                                <TableHead>
-                                    <TableRow sx={{backgroundColor: 'black'}}>
-                                        {headers}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell sx={{border: '1px solid black'}}>Select Tees</TableCell>
-                                        {cardYardages}
-                                    </TableRow>
-                                    <TableRow sx={{backgroundColor: 'grey' }}>
-                                        <TableCell sx={{border: '1px solid black'}}>Handicap</TableCell>
-                                        {cardHandicaps}
-                                    </TableRow>
-                                    {strokeInputRows}
-                                    <TableRow sx={{backgroundColor: 'black'}}>
-                                        <TableCell sx={{fontWeight: 'bold', color: 'white'}}>Par</TableCell>
-                                        {cardPars}
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Container>
-                </Card>
-            </Box>
-        )
+                </Box>
+            )
+        } else {
+            return (
+                <Box sx={page}>
+                    <Grid container direction="column" justifyContent="flex-start" alignItems="center" spacing={4}> 
+                        <Grid item sx={{width: '100%'}}>
+                            <Grid container display="flex" direction='row' alignItems="center" justifyContent="center" spacing={2}>
+                                <Grid item md={9}>
+                                    <Grid container direction='row' alignItems="center" justifyContent="flex-start">
+                                        <Grid item sx={!isMobile && {marginLeft: '10px'}} >
+                                                <CourseSelect course={course} courses={courses} handleChange={handleCourseChange} />
+                                        </Grid>
+                                        <Grid item>
+                                            <IconButton aria-label="add" color="success">
+                                                <AddIcon fontSize="medium" />
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item md={3}>
+                                    <Grid container justifyContent="flex-end">
+                                        <Grid item >
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker sx={{ '& .MuiInputLabel-root': { textAlign: 'right' } }} label="Date" onChange={handleDateChange} value={date}/>
+                                            </LocalizationProvider>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item sx={{width: "100%", overflow: 'auto'}}>
+                            <TableContainer component={Paper} sx={{ width: "100%", display: "table", tableLayout: "fixed" }}>
+                                <Table aria-label='scorecard'>
+                                    <TableHead>
+                                        <TableRow sx={{backgroundColor: 'black'}}>
+                                            {headers}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow sx={{backgroundColor: `${tee}`}}>
+                                            <TableCell sx={{border: '1px solid black'}}>
+                                                <Select value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
+                                            </TableCell>
+                                            {cardYardages}
+                                        </TableRow>
+                                        <TableRow sx={{backgroundColor: 'grey' }}>
+                                            <TableCell sx={{border: '1px solid black'}}>Handicap</TableCell>
+                                            {cardHandicaps}
+                                        </TableRow>
+                                        {strokeInputRows}
+                                        <TableRow sx={{backgroundColor: 'black'}}>
+                                            <TableCell sx={{fontWeight: 'bold', color: 'white'}}>Par</TableCell>
+                                            {cardPars}
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                        <Grid item>
+                            <Button variant="contained">Submit Match</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            )
+        }
     }
 }
 
