@@ -29,6 +29,8 @@ function PostMatch() {
     const [selectedGolfers, setSelectedGolfers] = React.useState(['', '', '', ''])
     const [currentStrokes, setCurrentStrokes] = React.useState(defaultStrokes)
     const [golferCount, setGolferCount] = React.useState(1)
+    const [submitLoading, setSubmitLoading] = React.useState(false)
+    const [submitError, setSubmitError] = React.useState(null)
     
     const URL = `http://127.0.0.1:8000/api/coursedata/${course}/${tee}/`
     
@@ -96,37 +98,67 @@ function PostMatch() {
         setDate(newDate)
     }
 
+    const handleSubmitMatch = async () => {
+        setSubmitLoading(true)
+        const submitURL = `http://127.0.0.1:8000/api/post`
+        const requestData = {
+            course,
+            tee,
+            date,
+            golfers: selectedGolfers,
+            strokes: currentStrokes,
+            golferCount: golferCount,
+        }
+        try {
+            const response = await fetch(submitURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+            if (!response.ok) {
+                throw new Error('Failed to submit match.')
+            }
+        } catch (error) {
+            console.error("Error submitting match", error);
+            setSubmitError('Failed to submit match. Please try again.')
+        } finally {
+            setSubmitLoading(false)
+        }
+    }
+
 
     // Create Headers
     const headers = []
     for (let i = 0; i < 18; i++) {
-        headers.push(<TableCell key={i} sx={{fontWeight: 'bold', color: 'white'}} align="center">{i+1}</TableCell>)
+        headers.push(<TableCell key={i} style={{fontWeight: 'bold', color: 'white'}} align="center">{i+1}</TableCell>)
     }
-    headers.splice(0, 0, <TableCell key={'hole'} sx={{fontWeight: 'bold', color: 'white'}}>Hole</TableCell>)
-    headers.splice(10, 0, <TableCell key={'out'} sx={{fontWeight: 'bold', color: 'white'}} align="center">OUT</TableCell>)
-    headers.push(<TableCell key={'IN'} sx={{fontWeight: 'bold', color: 'white'}} align="center">IN</TableCell>)
-    headers.push(<TableCell key={'TOT'} sx={{fontWeight: 'bold', color: 'white'}} align="center">TOT</TableCell>)
+    headers.splice(0, 0, <TableCell key={'hole'} style={{fontWeight: 'bold', color: 'white'}}>Hole</TableCell>)
+    headers.splice(10, 0, <TableCell key={'out'} style={{fontWeight: 'bold', color: 'white'}} align="center">OUT</TableCell>)
+    headers.push(<TableCell key={'IN'} style={{fontWeight: 'bold', color: 'white'}} align="center">IN</TableCell>)
+    headers.push(<TableCell key={'TOT'} style={{fontWeight: 'bold', color: 'white'}} align="center">TOT</TableCell>)
     // Create Yardages
     const cardYardages = []
     for (let i = 0; i < 18; i++) {
-        cardYardages.push(<TableCell key={i} sx={{border: '1px solid black'}} align="center">{courseData[2][i]}</TableCell>)
+        cardYardages.push(<TableCell key={i} style={{border: '1px solid black'}} align="center">{courseData[2][i]}</TableCell>)
     }
     const courseYardages = courseData[2]
     const frontNineYardages = courseYardages.slice(0, 9)
     const backNineYardages = courseYardages.slice(9, 18)
     const frontNineYardagesSum = frontNineYardages.reduce((partialSum, a) => partialSum + a, 0)
     const backNineYardagesSum = backNineYardages.reduce((partialSum, a) => partialSum + a, 0)
-    cardYardages.splice(10, 0, <TableCell key={'frontnineyards'} sx={{border: '1px solid black'}} align="center">{frontNineYardagesSum}</TableCell>)
-    cardYardages.push(<TableCell key={'backnine'} sx={{border: '1px solid black'}} align="center">{backNineYardagesSum}</TableCell>)
-    cardYardages.push(<TableCell key={'frontnine'} sx={{border: '1px solid black'}} align="center">{backNineYardagesSum + frontNineYardagesSum}</TableCell>)
+    cardYardages.splice(10, 0, <TableCell key={'frontnineyards'} style={{border: '1px solid black'}} align="center">{frontNineYardagesSum}</TableCell>)
+    cardYardages.push(<TableCell key={'backnine'} style={{border: '1px solid black'}} align="center">{backNineYardagesSum}</TableCell>)
+    cardYardages.push(<TableCell key={'frontnine'} style={{border: '1px solid black'}} align="center">{backNineYardagesSum + frontNineYardagesSum}</TableCell>)
     // Create Handicaps
     const cardHandicaps = []
     for (let i = 0; i < 18; i++) {
-        cardHandicaps.push(<TableCell key={i} sx={{border: '1px solid black'}} align="center">{courseData[1][i]}</TableCell>)
+        cardHandicaps.push(<TableCell key={i} style={{border: '1px solid black'}} align="center">{courseData[1][i]}</TableCell>)
     }
-    cardHandicaps.splice(9, 0, <TableCell key={'blank3'} sx={{border: '1px solid black'}} align="center"></TableCell>)
-    cardHandicaps.push(<TableCell key={'blank'} sx={{border: '1px solid black'}} align="center"></TableCell>)
-    cardHandicaps.push(<TableCell key={'blank2'} sx={{border: '1px solid black'}} align="center"></TableCell>)
+    cardHandicaps.splice(9, 0, <TableCell key={'blank3'} style={{border: '1px solid black'}} align="center"></TableCell>)
+    cardHandicaps.push(<TableCell key={'blank'} style={{border: '1px solid black'}} align="center"></TableCell>)
+    cardHandicaps.push(<TableCell key={'blank2'} style={{border: '1px solid black'}} align="center"></TableCell>)
     // Create Stroke Input Rows
     const strokeInputRows = []
     for (let i = 0; i < golferCount; i++) {
@@ -135,16 +167,16 @@ function PostMatch() {
     // Create Pars
     const cardPars = []
     for (let i = 0; i < 18; i++) {
-        cardPars.push(<TableCell size="small" key={i} sx={{fontWeight: 'bold', color: 'white'}} align="center">{courseData[0][i]}</TableCell>)
+        cardPars.push(<TableCell size="small" key={i} style={{fontWeight: 'bold', color: 'white'}} align="center">{courseData[0][i]}</TableCell>)
     }
     const coursePars = courseData[0]
     const frontNinePars = coursePars.slice(0, 9)
     const backNinePars = coursePars.slice(9, 18)
     const frontNineParsSum = frontNinePars.reduce((partialSum, a) => partialSum + a, 0)
     const backNineParsSum = backNinePars.reduce((partialSum, a) => partialSum + a, 0)
-    cardPars.splice(9, 0, <TableCell key={'frontnine'} sx={{fontWeight: 'bold', color: 'white'}} align="center">{frontNineParsSum}</TableCell>)
-    cardPars.push(<TableCell key={'backnine'} sx={{fontWeight: 'bold', color: 'white'}} align="center">{backNineParsSum}</TableCell>)
-    cardPars.push(<TableCell key={'total'} sx={{fontWeight: 'bold', color: 'white'}} align="center">{backNineParsSum + frontNineParsSum}</TableCell>)
+    cardPars.splice(9, 0, <TableCell key={'frontnine'} style={{fontWeight: 'bold', color: 'white'}} align="center">{frontNineParsSum}</TableCell>)
+    cardPars.push(<TableCell key={'backnine'} style={{fontWeight: 'bold', color: 'white'}} align="center">{backNineParsSum}</TableCell>)
+    cardPars.push(<TableCell key={'total'} style={{fontWeight: 'bold', color: 'white'}} align="center">{backNineParsSum + frontNineParsSum}</TableCell>)
 
     // Create Tee Selects
     const teeSelects = []
@@ -164,7 +196,7 @@ function PostMatch() {
             </Box>
         )
     } else {
-        if (loading) {
+        if (loading || submitLoading) {
             return (
                 <Box sx={page}>
                     <Grid container justifyContent="center" alignItems="center">
@@ -207,24 +239,24 @@ function PostMatch() {
                             <TableContainer component={Paper} sx={{ width: "100%", display: "table", tableLayout: "fixed" }}>
                                 <Table aria-label='scorecard'>
                                     <TableHead>
-                                        <TableRow sx={{backgroundColor: 'black'}}>
+                                        <TableRow style={{backgroundColor: 'black'}}>
                                             {headers}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableRow sx={{backgroundColor: `${tee}`}}>
-                                            <TableCell sx={{border: '1px solid black'}}>
+                                        <TableRow style={{backgroundColor: `${tee}`}}>
+                                            <TableCell style={{border: '1px solid black'}}>
                                                 <Select value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
                                             </TableCell>
                                             {cardYardages}
                                         </TableRow>
-                                        <TableRow sx={{backgroundColor: 'grey' }}>
-                                            <TableCell sx={{border: '1px solid black'}}>Handicap</TableCell>
+                                        <TableRow style={{backgroundColor: 'grey' }}>
+                                            <TableCell style={{border: '1px solid black'}}>Handicap</TableCell>
                                             {cardHandicaps}
                                         </TableRow>
                                         {strokeInputRows}
-                                        <TableRow sx={{backgroundColor: 'black'}}>
-                                            <TableCell sx={{fontWeight: 'bold', color: 'white'}}>Par</TableCell>
+                                        <TableRow style={{backgroundColor: 'black'}}>
+                                            <TableCell style={{fontWeight: 'bold', color: 'white'}}>Par</TableCell>
                                             {cardPars}
                                         </TableRow>
                                     </TableBody>
@@ -232,7 +264,14 @@ function PostMatch() {
                             </TableContainer>
                         </Grid>
                         <Grid item>
-                            <Button variant="contained">Submit Match</Button>
+                            <Button onClick={handleSubmitMatch} disabled={submitLoading} variant="contained">Submit Match</Button>
+                        </Grid>
+                        <Grid item>
+                            {submitError && (
+                                <div style={{ color: 'red' }}>
+                                    {submitError}
+                                </div>
+                            )}
                         </Grid>
                     </Grid>
                 </Box>
