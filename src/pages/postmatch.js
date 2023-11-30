@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { StrokeInputRow } from '../components/StrokeInputRow'
 import AddIcon from '@mui/icons-material/Add'
+import { Link } from 'react-router-dom'
 
 
 function PostMatch() {
@@ -218,9 +219,11 @@ function PostMatch() {
                                                 <CourseSelect course={course} courses={courses} handleChange={handleCourseChange} />
                                         </Grid>
                                         <Grid item>
-                                            <IconButton aria-label="add" color="success">
-                                                <AddIcon fontSize="medium" />
-                                            </IconButton>
+                                            <Link to='/new'>
+                                                <IconButton aria-label="add" color="success">
+                                                    <AddIcon fontSize="medium" />
+                                                </IconButton>
+                                            </Link>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -247,6 +250,11 @@ function PostMatch() {
                                         <TableRow style={{backgroundColor: `${tee}`}}>
                                             <TableCell style={{border: '1px solid black'}}>
                                                 <Select value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
+                                                <Link to='/new'>
+                                                    <IconButton aria-label="add" color="success">
+                                                        <AddIcon fontSize="medium" />
+                                                    </IconButton>
+                                                </Link>   
                                             </TableCell>
                                             {cardYardages}
                                         </TableRow>

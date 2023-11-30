@@ -4,3 +4,10 @@
     font-size: 20px;
     width: 32px;
 }
+
+.yardage-input {
+    text-align: center;
+    height: 40px;
+    font-size: 15px;
+    width: 64px;
+}

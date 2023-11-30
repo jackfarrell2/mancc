@@ -5,6 +5,7 @@ import Home from './pages/home'
 import Courses from './pages/courses'
 import Golfers from './pages/golfers'
 import PostMatch from './pages/postmatch'
+import New from './pages/new'
 import Vs from './pages/vs'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { Footer } from './components/Footer'
@@ -64,6 +65,7 @@ function App() {
           <Route path='/courses' Component={Courses} />
           <Route path='/vs' Component={Vs} />
           <Route path='/postmatch' Component={PostMatch} />
+          <Route path='/new' Component={New} />
         </Routes>
         <Footer />
       </Router>
