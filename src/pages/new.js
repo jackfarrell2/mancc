@@ -5,6 +5,7 @@ import { CourseSelect } from '../components/CourseSelect'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { YardageInput } from '../components/YardageInput'
 import { ParInput } from '../components/ParInput'
+import { HandicapInput } from '../components/HandicapInput'
 
 function New() {
 
@@ -17,8 +18,12 @@ function New() {
     const [yardages, setYardages] = React.useState(Array(18).fill(0))
     const [handicaps, setHandicaps] = React.useState(Array(18).fill(0))
     const [pars, setPars] = React.useState(Array(18).fill(0))
-
-
+    const [slope, setSlope] = React.useState('')
+    const [courseRating, setCourseRating] = React.useState('')
+    const [submitError, setSubmitError] = React.useState('')
+    const [submitOption, setSubmitOption] = React.useState('tees')
+    const [newCourseName, setNewCourseName] = React.useState('')
+    const [isSuccess, setIsSuccess] = React.useState(false)
 
     React.useEffect(() => {
         setLoading(true)
@@ -34,11 +39,9 @@ function New() {
                 if (!response.ok) {
                     throw new Error('Failed to fetch course names.')
                 }
-                // Update Courses
                 const data = await response.json()
                 const courseNames = data['course_names']
                 setCourses(courseNames)
-                // setCourse(prevCourses => prevCourses ? prevCourses[0]: null)
                 
             } catch (error) {
                 console.error("Error fetching course names", error)
@@ -78,6 +81,67 @@ function New() {
         setPars(parBuffer)
     }
 
+    function handleSlopeChange(event) {
+        setSlope(event.target.value)
+    }
+
+    function handleCourseRatingChange(event) {
+        setCourseRating(event.target.value)
+    }
+
+    function handleTeesClick() {
+        setSubmitOption('tees')
+    }
+
+    function handleNewCourseClick() {
+        setSubmitOption('course')
+    }
+
+    function handleNewCourseNameChange(event) {
+        setNewCourseName(event.target.value)
+    }
+
+    const handleSubmitCourse = async () => {
+        setLoading(true)
+        setSubmitError('')
+        const submitURL = `http://127.0.0.1:8000/api/new/`
+        const requestData = {
+            course,
+            tee,
+            slope,
+            courseRating,
+            submitOption,
+            newCourseName,
+            yardages: yardages,
+            handicaps: handicaps,
+            pars: pars,
+        }
+        try {
+            const response = await fetch(submitURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            const responseData = await response.json()
+            if (responseData.error) {
+                setSubmitError(`Error: ${responseData.result.Message}`)
+            } else {
+                setIsSuccess(true)
+            }
+            if (!response.ok) {
+                throw new Error('Failed to submit course.')
+            }
+        } catch (error) {
+            console.error("Error submitting course", error);
+        } finally {
+            setLoading(false)
+
+        }
+    }
+
     // Create Tee Selects
     const teeSelects = []
     for (let i = 0; i < teeOptions.length; i++) {
@@ -105,14 +169,14 @@ function New() {
     const backNineYardages = yardages.slice(9, 18)
     const frontNineYardagesSum = frontNineYardages.reduce((partialSum, a) => partialSum + a, 0)
     const backNineYardagesSum = backNineYardages.reduce((partialSum, a) => partialSum + a, 0)
-    yardageInputs.splice(10, 0, <TableCell key={'frontnineyards'} style={{border: '1px solid black'}} align="center">{frontNineYardagesSum}</TableCell>)
+    yardageInputs.splice(9, 0, <TableCell key={'frontnineyards'} style={{border: '1px solid black'}} align="center">{frontNineYardagesSum}</TableCell>)
     yardageInputs.push(<TableCell key={'backnine'} style={{border: '1px solid black'}} align="center">{backNineYardagesSum}</TableCell>)
     yardageInputs.push(<TableCell key={'frontnine'} style={{border: '1px solid black'}} align="center">{backNineYardagesSum + frontNineYardagesSum}</TableCell>)
 
     // Create Handicaps
     const handicapInputs = handicaps.map((handicap, index) => (
         <TableCell key={index} style={{ border: '1px solid black' }} align="center">
-            <YardageInput handicap={handicap} index={index} handleChange={handleHandicapChange} />
+            <HandicapInput handicap={handicap} index={index} handleChange={handleHandicapChange} />
         </TableCell>
     ));
     handicapInputs.splice(9, 0, <TableCell key={'blank3'} style={{border: '1px solid black'}} align="center"></TableCell>)
@@ -130,9 +194,9 @@ function New() {
     const backNinePars = pars.slice(9, 18)
     const frontNineParsSum = frontNinePars.reduce((partialSum, a) => partialSum + a, 0)
     const backNineParsSum = backNinePars.reduce((partialSum, a) => partialSum + a, 0)
-    parInputs.splice(10, 0, <TableCell key={'frontninepars'} style={{border: '1px solid black', color: 'white' }} align='center'>{frontNineParsSum}</TableCell>)
-    parInputs.push(<TableCell key={'frontninepars'} style={{border: '1px solid black', color: 'white' }} align='center'>{backNineParsSum}</TableCell>)
-    parInputs.push(<TableCell key={'frontninepars'} style={{border: '1px solid black', color: 'white' }} align='center'>{frontNineParsSum + backNineParsSum}</TableCell>)
+    parInputs.splice(9, 0, <TableCell key={'frontninepars'} style={{border: '1px solid black', color: 'white' }} align='center'>{frontNineParsSum}</TableCell>)
+    parInputs.push(<TableCell key={'backninepars'} style={{border: '1px solid black', color: 'white' }} align='center'>{backNineParsSum}</TableCell>)
+    parInputs.push(<TableCell key={'totalpars'} style={{border: '1px solid black', color: 'white' }} align='center'>{frontNineParsSum + backNineParsSum}</TableCell>)
 
 
 
@@ -158,10 +222,10 @@ function New() {
                             <Grid item>
                                 <Grid container direction='row' justifyContent="center" alignItems='center' spacing={2}>
                                     <Grid item>
-                                        <Button variant='contained' color='secondary'>Just New Tees</Button>
+                                        <Button variant='contained' color='secondary' onClick={handleTeesClick}>Just New Tees</Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button variant='contained' color='secondary'>New Course</Button>
+                                        <Button variant='contained' color='secondary' onClick={handleNewCourseClick}>New Course</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -169,13 +233,14 @@ function New() {
                     </Grid>
                     <Grid item xs={12} width="100%">
                         <Grid container direction="row" justifyContent='flex-start' alignItems='center' spacing={2}>
-                            <Grid item xs={3}>
-                                <CourseSelect course={course} courses={courses} handleChange={handleCourseChange}/>
+                            <Grid item lg={3}>
+                                {(submitOption === 'tees') && <CourseSelect sx={{width: '90%'}} course={course} courses={courses} handleChange={handleCourseChange}/>}
+                                {(submitOption === 'course') && <TextField sx={{width: '90%', minWidth: '200px'}} id='course-name' label='Course Name' variant='standard' onChange={handleNewCourseNameChange} />}
                             </Grid>
-                            <Grid item xs={3} md={1}>
+                            <Grid item md={3} lg={1}>
                                 <FormControl fullWidth id="course-form">
                                     <InputLabel id="tees-select">Tees</InputLabel>
-                                    <Select label='tees' value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
+                                    <Select sx={{minWidth: '200px'}} label='tees' value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
                                 </FormControl>
                             </Grid>
                         </Grid>
@@ -184,11 +249,11 @@ function New() {
                         <Grid container direction="row" justifyContent='flex-start' alignItems='center' spacing={2}>
                             <Grid item>
                                 <Grid container direction="row" justifyContent='flex-start' alignItems='center' spacing={1}>
-                                    <Grid item xs={3}>
-                                        <TextField id='slope' label='Slope' variant='filled' />
+                                    <Grid item md={6}>
+                                        <TextField value={slope} id='slope' label='Slope' variant='filled' onChange={handleSlopeChange} />
                                     </Grid>
-                                    <Grid item xs={3} md={6}>
-                                        <TextField id='slope' label={!isMobile ? 'Course Rating (i.e. 69.6)' : 'Course Rating'} variant='filled' />
+                                    <Grid item md={6}>
+                                        <TextField value={courseRating} id='slope' label={!isMobile ? 'Course Rating (i.e. 69.6)' : 'Course Rating'} variant='filled' onChange={handleCourseRatingChange}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -222,11 +287,24 @@ function New() {
                     <Grid item xs={12} width="100%">
                         <Grid container justifyContent='center' alignItems='center'>
                             <Grid item>
-                                <Button variant="contained">Add Course</Button>
+                                <Button variant="contained" onClick={handleSubmitCourse}>Add Course</Button>
                             </Grid>
 
                         </Grid>
                     </Grid>
+                    <Grid item>
+                            {submitError && (
+                                <div style={{ color: 'red' }}>
+                                    {submitError}
+                                </div>
+                            )}
+                            {isSuccess && (
+                                <div style={{ color: 'green' }}>
+                                    <Typography>Your new course has been submitted!</Typography>
+                                </div>
+                            )}
+                            
+                        </Grid>
                 </Grid>
             </Box>
         )

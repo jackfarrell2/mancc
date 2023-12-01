@@ -42,7 +42,6 @@ function Courses() {
                     setTee(json.tees[0])
                     setError({'error': true, 'message': json.result['Message']})
                 } else {
-                    console.log(json)
                     setGolfers(json.all_golfers)
                     setCourses(json.courses)
                     setTees(json.tees)

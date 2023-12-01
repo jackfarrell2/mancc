@@ -22,6 +22,7 @@ function CourseSelect({course, courses, handleChange}) {
                 value={course}
                 label="Course"
                 onChange={handleFormChange}
+                sx={{minWidth: '200px'}}
             >
                 {courseSelects}
             </Select>

@@ -211,7 +211,7 @@ function PostMatch() {
             return (
                 <Box sx={page}>
                     <Grid container direction="column" justifyContent="flex-start" alignItems="center" spacing={4}> 
-                        <Grid item sx={{width: '100%'}}>
+                        <Grid item style={{width: '100%'}}>
                             <Grid container display="flex" direction='row' alignItems="center" justifyContent="center" spacing={2}>
                                 <Grid item md={9}>
                                     <Grid container direction='row' alignItems="center" justifyContent="flex-start">
@@ -229,7 +229,7 @@ function PostMatch() {
                                 </Grid>
                                 <Grid item md={3}>
                                     <Grid container justifyContent="flex-end">
-                                        <Grid item sx={isMobile && {pr: '45px'}}>
+                                        <Grid item style={{ ...(isMobile && { paddingRight: '45px' }) }}>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <DatePicker sx={{ '& .MuiInputLabel-root': { textAlign: 'right' } }} label="Date" onChange={handleDateChange} value={date}/>
                                             </LocalizationProvider>
@@ -238,7 +238,7 @@ function PostMatch() {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item sx={{width: "100%", overflow: 'auto'}}>
+                        <Grid item style={{width: "100%", overflow: 'auto'}}>
                             <TableContainer component={Paper} sx={{ width: "100%", display: "table", tableLayout: "fixed" }}>
                                 <Table aria-label='scorecard'>
                                     <TableHead>

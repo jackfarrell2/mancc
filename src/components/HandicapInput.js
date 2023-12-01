@@ -12,7 +12,7 @@ function HandicapInput({handicap, handleChange, index}) {
 
     return (
         <Box>
-            <input value={(handicap === 0) ? '' : handicap} onChange={handleFormChange} type='text' className="yardage-input" pattern="[1-9]|1[0-8]" />
+            <input value={(handicap === 0) ? '' : handicap} onChange={handleFormChange} type='text' className="yardage-input" />
         </Box>
     )
 }
