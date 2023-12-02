@@ -44,7 +44,6 @@ function Golfers() {
         setGolfer(golfer)
     }
 
-
     if (!data) {
         return (
             <Box sx={page}>

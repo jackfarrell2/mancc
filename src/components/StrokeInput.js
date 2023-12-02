@@ -5,6 +5,8 @@ import AddIcon from '@mui/icons-material/Add';
 import '../styles/scores.css'
 
 function StrokeInput({strokes, handleChange, index, golferIndex}) {
+
+    const allowedStrokes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     
     function handleFormChange(event) {
         let newStrokes = parseInt(event.target.value)
@@ -14,12 +16,16 @@ function StrokeInput({strokes, handleChange, index, golferIndex}) {
 
     function handleAddClick(){
         const newStrokes = strokes + 1
-        handleChange(newStrokes, index, golferIndex)
+        if (allowedStrokes.includes(newStrokes)) {
+            handleChange(newStrokes, index, golferIndex)
+        } 
     }
 
     function handleSubtractClick() {
         const newStrokes = strokes - 1
-        handleChange(newStrokes, index, golferIndex)
+        if (allowedStrokes.includes(newStrokes)) {
+            handleChange(newStrokes, index, golferIndex)
+        }
     }
 
     return (

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Typography, Card, Grid, useMediaQuery, Container, Button } from '@mui/material'
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Typography, Card, Grid, useMediaQuery, Container, Button, Link } from '@mui/material'
 import '../styles/golfer.css'
 import { Score } from './Score'
 
@@ -194,7 +194,9 @@ function Scorecard({variant, round, golfer, ...props}) {
                 <Grid item xs={4}>
                     <Grid container justifyContent="flex-end" alignItems="center">
                         <Grid item>
-                            <Button sx={{marginRight: '8px'}} size="small" color="error" variant="contained">{isMobile ? 'Edit' : 'Edit Round'}</Button>
+                            <Link to={`/editmatch/${round['match']}`}>
+                                <Button sx={{marginRight: '8px'}} size="small" color="error" variant="contained">{isMobile ? 'Edit' : 'Edit Round'}</Button>
+                            </Link>
                         </Grid>
                     </Grid>
                 </Grid>
