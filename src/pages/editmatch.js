@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem } from "@mui/material"
+import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem, Typography } from "@mui/material"
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
 import { LoadingSpinner } from '../components/LoadingSpinner'
@@ -12,8 +12,7 @@ import { Link, useParams } from 'react-router-dom'
 
 
 function EditMatch() {
-    const matchId = useParams()
-    console.log(`the match id is ${matchId}`)
+    const { matchId } = useParams()
     const today = new Date()
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const defaultData = [[4,4,5,5,3,4,4,3,4,4,4,3,4,5,5,4,4,3],[13,11,3,9,17,1,5,15,7,12,14,18,6,10,4,2,8,16],[316,338,507,501,141,404,332,139,353,293,335,134,331,525,514,397,372,186]]
@@ -33,31 +32,113 @@ function EditMatch() {
     const [golferCount, setGolferCount] = React.useState(1)
     const [submitLoading, setSubmitLoading] = React.useState(false)
     const [submitError, setSubmitError] = React.useState(null)
+    const [submitSuccess, setSubmitSuccess] = React.useState(false)
+    const [deleteSuccess, setDeleteSuccess] = React.useState(false)
     
-    const URL = `http://127.0.0.1:8000/api/coursedata/${course}/${tee}/`
-    
+    const url = `http://127.0.0.1:8000/api/edit/${matchId}/`
+
     React.useEffect(() => {
         setLoading(true)
         const fetchData = async () => {
-            const result = await fetch(URL)
-            result.json().then(json => {
-                if (json.error) {
-                    setTeeOptions(json.tee)
-                    setTee(json.tee[0])
-                } else {
-                    setCourseData(json.course_data)
-                    setCourses(json.course_names)
-                    setTeeOptions(json.tee_options)
-                    setGolfers(json.golfer_names)
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch match information.')
                 }
-            })
-            setLoading(false)
-        }
-        fetchData();
-    }, [URL])
 
-    function handleCourseChange(course) {
-        setCourse(course)
+                const data = await response.json()
+                setCourse(data['course_name'])
+                setCourses(data['course_names'])
+                setTeeOptions(data['tee_options'])
+                setSelectedGolfers(data['golfers'])
+                const courseDataBuffer = [...courseData]
+                courseDataBuffer[0] = data['pars']
+                courseDataBuffer[1] = data['handicaps']
+                courseDataBuffer[2] = data['yardages']
+                setCourseData(courseDataBuffer)
+                const strokesBuffer = [...currentStrokes]
+                for (let i = 0; i < data['golfers'].length; i++) {
+                    strokesBuffer[i] = data['golfers_strokes'][i]
+                }
+                setCurrentStrokes(strokesBuffer)
+                setTee(data['course_tees'])
+                // setTeeOptions(data['tee_options'])
+                setGolfers(data['golfer_options'])
+                setGolferCount(data['golfers'].length)
+                setDate(new Date(`${data['date']}T00:00`))
+            } catch (error) {
+                console.error("Error fetching match information", error)
+            }
+            setLoading(false)
+        };
+        fetchData();
+
+    }, [url]);
+    
+
+    function handleCourseChange(newCourse) {
+        let newTee = 'White' // Default Value
+
+        const apiUrl = `http://127.0.0.1:8000/api/coursedata/${newCourse}/${newTee}/`
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch course data')
+                }
+                const data = await response.json();
+                if (data.message === 'fail') {
+                    newTee = data.tee[0]
+                    // Re-fetch the API with the new tee
+                    const updatedApiUrl = `http://127.0.0.1:8000/api/coursedata/${newCourse}/${newTee}/`;
+                    const updatedResponse = await fetch(updatedApiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (updatedResponse.ok) {
+                        const updatedData = await updatedResponse.json();
+                        const courseDataBuffer = [...courseData]
+                        courseDataBuffer[0] = updatedData.course_data[0]
+                        courseDataBuffer[1] = updatedData.course_data[1]
+                        courseDataBuffer[2] = updatedData.course_data[2]
+                        setCourseData(courseDataBuffer)
+                        setCourse(newCourse)
+                        setTeeOptions(updatedData.tee_options)
+                        setTee(newTee)
+                    } else {
+                        throw new Error('Failed to re-fetch course data with the new tee');
+                    }
+                }
+                const courseDataBuffer = [...courseData]
+                courseDataBuffer[0] = data.course_data[0]
+                courseDataBuffer[1] = data.course_data[1]
+                courseDataBuffer[2] = data.course_data[2]
+
+                setCourseData(courseDataBuffer)
+                setCourse(newCourse)
+                setTeeOptions(data.tee_options)
+                setTee(newTee)
+        
+            } catch (error) {
+                // Nothing to catch
+            }
+        };
+        fetchData();    
     }
 
     function handleAdd(){
@@ -93,16 +174,44 @@ function EditMatch() {
     }
 
     function handleTeeChange(event) {
-        setTee(event.target.value)
+        const newTee = event.target.value
+        setTee(newTee)
+        const apiUrl = `http://127.0.0.1:8000/api/coursedata/${course}/${newTee}/`
+        const fetchData = async () => {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch course data')
+                }
+
+                const data = await response.json();
+
+                setCourseData(data.course_data)
+        
+            } catch (error) {
+                console.error('Error fetching course data', error)
+            }
+        };
+        fetchData();  
+
     }
 
     function handleDateChange(newDate) {
         setDate(newDate)
     }
 
-    const handleSubmitMatch = async () => {
+    const handleDeleteMatch = async () => {
+        setSubmitError(null)
+        setDeleteSuccess(false)
+        setSubmitSuccess(false)
         setSubmitLoading(true)
-        const submitURL = `http://127.0.0.1:8000/api/post`
+        const submitURL = `http://127.0.0.1:8000/api/edit/${matchId}/`
         const requestData = {
             course,
             tee,
@@ -120,11 +229,52 @@ function EditMatch() {
                 body: JSON.stringify(requestData)
             });
             if (!response.ok) {
+                setSubmitError('Failed to delete match.')
+                throw new Error('Failed to delete match')   
+            }
+            setDeleteSuccess(true)
+        } catch (error) {
+            console.error("Error deleteing match", error)
+            setSubmitError('Failed to delete match. Please try again.')
+        } finally {
+            setSubmitLoading(false)
+        }
+    }
+
+    const handleSubmitMatch = async () => {
+        setSubmitError(null)
+        setSubmitSuccess(false)
+        setDeleteSuccess(false)
+        setSubmitLoading(true)
+        const submitURL = `http://127.0.0.1:8000/api/edit/${matchId}/`
+        const requestData = {
+            course,
+            tee,
+            date,
+            golfers: selectedGolfers,
+            strokes: currentStrokes,
+            golferCount: golferCount,
+            matchId: matchId,
+        }
+        try {
+            const response = await fetch(submitURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+            if (!response.ok) {
                 throw new Error('Failed to submit match.')
+            }
+            const responseData = await response.json();
+            if (responseData.error) {
+                setSubmitError(responseData.result['Message'])
+            } else {
+                setSubmitSuccess(true)
             }
         } catch (error) {
             console.error("Error submitting match", error);
-            setSubmitError('Failed to submit match. Please try again.')
         } finally {
             setSubmitLoading(false)
         }
@@ -273,12 +423,29 @@ function EditMatch() {
                             </TableContainer>
                         </Grid>
                         <Grid item>
-                            <Button onClick={handleSubmitMatch} disabled={submitLoading} variant="contained">Submit Match</Button>
+                            <Grid container spacing={2}>
+                                <Grid item>
+                                    <Button onClick={handleDeleteMatch} disabled={submitLoading} variant="contained" color='error'>Delete Match</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button onClick={handleSubmitMatch} disabled={submitLoading} variant="contained">Edit Match</Button>
+                                </Grid>
+                            </Grid>
                         </Grid>
                         <Grid item>
                             {submitError && (
                                 <div style={{ color: 'red' }}>
                                     {submitError}
+                                </div>
+                            )}
+                            {submitSuccess && (
+                                <div style={{ color: 'green' }}>
+                                    <Typography>Match was edited successfully.</Typography>
+                                </div>
+                            )}
+                            {deleteSuccess && (
+                                <div style={{ color: 'green' }}>
+                                    <Typography>Match was deleted successfully.</Typography>
                                 </div>
                             )}
                         </Grid>

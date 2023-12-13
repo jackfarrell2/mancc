@@ -157,7 +157,7 @@ function Courses() {
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Container>
+                            <Grid container justifyContent="center">
                                 <Grid container sx={{ borderBottom: 1, borderColor: 'divider' }} justifyContent="center">
                                     <Grid item>
                                         <Tabs value={tab} onChange={handleTabChange}>
@@ -183,7 +183,7 @@ function Courses() {
                                         </Grid>
                                     </Grid>
                                 </CustomTabPanel>
-                            </Container>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Box>

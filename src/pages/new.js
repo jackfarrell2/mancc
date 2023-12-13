@@ -24,6 +24,7 @@ function New() {
     const [submitOption, setSubmitOption] = React.useState('tees')
     const [newCourseName, setNewCourseName] = React.useState('')
     const [isSuccess, setIsSuccess] = React.useState(false)
+    const [deleteSuccess, setDeleteSuccess] = React.useState(false)
 
     React.useEffect(() => {
         setLoading(true)
@@ -101,6 +102,36 @@ function New() {
         setNewCourseName(event.target.value)
     }
 
+
+    const handleDeleteCourse = async () => {
+        
+        setLoading(true);
+
+        const deleteUrl = `http://127.0.0.1:8000/api/delete/${course}/${tee}`;
+
+        try {
+            const response = await fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            });
+
+            if (!response.ok) {
+            throw new Error('Failed to delete course.');
+            }
+
+            setDeleteSuccess(true);
+        } catch (error) {
+            console.error('Error deleting course', error);
+            setSubmitError('Error deleting course. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    
     const handleSubmitCourse = async () => {
         setLoading(true)
         setSubmitError('')
@@ -237,10 +268,10 @@ function New() {
                                 {(submitOption === 'tees') && <CourseSelect sx={{width: '90%'}} course={course} courses={courses} handleChange={handleCourseChange}/>}
                                 {(submitOption === 'course') && <TextField sx={{width: '90%', minWidth: '200px'}} id='course-name' label='Course Name' variant='standard' onChange={handleNewCourseNameChange} />}
                             </Grid>
-                            <Grid item md={3} lg={1}>
+                            <Grid item md={3}>
                                 <FormControl fullWidth id="course-form">
                                     <InputLabel id="tees-select">Tees</InputLabel>
-                                    <Select sx={{minWidth: '200px'}} label='tees' value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
+                                    <Select sx={{maxWidth: '200px'}} label='tees' value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
                                 </FormControl>
                             </Grid>
                         </Grid>
@@ -285,11 +316,10 @@ function New() {
                             </TableContainer>
                     </Grid>
                     <Grid item xs={12} width="100%">
-                        <Grid container justifyContent='center' alignItems='center'>
+                        <Grid container justifyContent='center' alignItems='center' spacing={2}>
                             <Grid item>
                                 <Button variant="contained" onClick={handleSubmitCourse}>Add Course</Button>
                             </Grid>
-
                         </Grid>
                     </Grid>
                     <Grid item>
@@ -301,6 +331,11 @@ function New() {
                             {isSuccess && (
                                 <div style={{ color: 'green' }}>
                                     <Typography>Your new course has been submitted!</Typography>
+                                </div>
+                            )}
+                            {deleteSuccess && (
+                                <div style={{ color: 'green' }}>
+                                    <Typography>The course has been deleted!</Typography>
                                 </div>
                             )}
                             

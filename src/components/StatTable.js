@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { useTable, useSortBy } from 'react-table'
 import '../styles/table.css';
+import Eagle from '../util/eagle.png'
+import { useNavigate } from 'react-router-dom'
 
 
 
 function StatTable({golfer_data}) {
-
+    const navigate = useNavigate()
     const data = golfer_data
     const columns = React.useMemo(() => [
         {
@@ -65,7 +67,11 @@ function StatTable({golfer_data}) {
             accessor: "Par 5 Avg",
         },
         {
-            Header: "Eagles",
+            Header: () => (
+                <div>
+                    <img src={Eagle} alt="Eagles" style={{ width: '30px', height: 'auto' }} />
+                </div>
+            ),
             accessor: "Eagles",
         },
     ], [])
@@ -76,6 +82,18 @@ function StatTable({golfer_data}) {
     }, useSortBy)
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
+
+    React.useEffect(() => {
+        const handleRowClick = (golferName) => {
+        navigate(`/golfers/${golferName}`);
+        };
+
+        rows.forEach((row) => {
+        row.onClick = () => handleRowClick(row.original.Golfer);
+        });
+    }, [navigate, rows]);   
+
+
     return (
         <div>
             <table className="main-table" {...getTableProps()}>
@@ -97,14 +115,14 @@ function StatTable({golfer_data}) {
                         rows.map((row, i) => {
                             prepareRow(row)
                             return (
-                                <tr key={i} {...row.getRowProps()}>
+                                 <tr key={i} {...row.getRowProps()} onClick={row.onClick} style={{cursor: 'pointer'}}>
                                     {
                                         row.cells.map((cell, i) => {
                                             return <td key={i} {...cell.getCellProps}>{cell.render('Cell')}</td>
                                         })
                                     }
                                 </tr>
-                            )
+                        )
                         })
                     }
                 </tbody>

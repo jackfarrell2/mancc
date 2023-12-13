@@ -7,12 +7,15 @@ import { MinimizedStatTable } from '../components/MinimizedStatTable'
 import { GolferSelect } from '../components/GolferSelect'
 import { Scorecard } from '../components/Scorecard'
 import { Error } from '../components/Error'
+import { useParams } from 'react-router-dom'
 
 function Golfers() {
+    const { golferName } = useParams()
+    const defaultName = golferName || 'Nick'
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const [data, setData] = React.useState(null)
     const [golfers, setGolfers] = React.useState(null)
-    const [golfer, setGolfer] = React.useState('Nick')
+    const [golfer, setGolfer] = React.useState(defaultName)
     const [scorecards, setScorecards] = React.useState(null)
     const [scorecard, setScorecard] = React.useState(0)
     const [error, setError] = React.useState({'error': false, 'message': 'No Error'})

@@ -62,12 +62,12 @@ function App() {
         <Navbar handleOpen={handleOpen}/>
         <Routes>
           <Route exact path='/' Component={Home} />
-          <Route path='/golfers' Component={Golfers} />
+          <Route path='/golfers/:golferName?' Component={Golfers} />
           <Route path='/courses' Component={Courses} />
           <Route path='/vs' Component={Vs} />
           <Route path='/postmatch' Component={PostMatch} />
           <Route path='/new' Component={New} />
-          <Route path='/editmatch/:matchId' Component={EditMatch}></Route>
+          <Route path='/editmatch/:matchId' Component={EditMatch} />
         </Routes>
         <Footer />
       </Router>

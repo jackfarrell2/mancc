@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Typography, Card, Grid, useMediaQuery, Container, Button, Link } from '@mui/material'
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Typography, Card, Grid, useMediaQuery, Container, Button } from '@mui/material'
+import { Link } from 'react-router-dom'
 import '../styles/golfer.css'
 import { Score } from './Score'
 
@@ -192,13 +193,14 @@ function Scorecard({variant, round, golfer, ...props}) {
                     </Grid>
                 </Grid>
                 <Grid item xs={4}>
-                    <Grid container justifyContent="flex-end" alignItems="center">
-                        <Grid item>
-                            <Link to={`/editmatch/${round['match']}`}>
-                                <Button sx={{marginRight: '8px'}} size="small" color="error" variant="contained">{isMobile ? 'Edit' : 'Edit Round'}</Button>
-                            </Link>
-                        </Grid>
-                    </Grid>
+                    {round['match'] && (
+                        <Grid container justifyContent="flex-end" alignItems="center">
+                            <Grid item>
+                                <Link to={`/editmatch/${round['match']}`}>
+                                    <Button sx={{marginRight: '8px'}} size="small" color="error" variant="contained">{isMobile ? 'Edit' : 'Edit Round'}</Button>
+                                </Link>
+                            </Grid>
+                        </Grid>)}
                 </Grid>
             </Grid>
         </Card>

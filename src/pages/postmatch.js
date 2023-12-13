@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem } from "@mui/material"
+import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem, Typography } from "@mui/material"
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
 import { LoadingSpinner } from '../components/LoadingSpinner'
@@ -32,6 +32,7 @@ function PostMatch() {
     const [golferCount, setGolferCount] = React.useState(1)
     const [submitLoading, setSubmitLoading] = React.useState(false)
     const [submitError, setSubmitError] = React.useState(null)
+    const [submitSuccess, setSubmitSuccess] = React.useState()
     
     const URL = `http://127.0.0.1:8000/api/coursedata/${course}/${tee}/`
     
@@ -55,8 +56,8 @@ function PostMatch() {
         fetchData();
     }, [URL])
 
-    function handleCourseChange(course) {
-        setCourse(course)
+    function handleCourseChange(updatedCourse) {
+        setCourse(updatedCourse)
     }
 
     function handleAdd(){
@@ -101,7 +102,9 @@ function PostMatch() {
 
     const handleSubmitMatch = async () => {
         setSubmitLoading(true)
-        const submitURL = `http://127.0.0.1:8000/api/post`
+        setSubmitSuccess(false)
+        setSubmitError(null)
+        const submitURL = `http://127.0.0.1:8000/api/post/`
         const requestData = {
             course,
             tee,
@@ -121,9 +124,14 @@ function PostMatch() {
             if (!response.ok) {
                 throw new Error('Failed to submit match.')
             }
+            const responseData = await response.json();
+            if (responseData.error) {
+                setSubmitError(responseData.result['Message'])
+            } else {
+                setSubmitSuccess(true)
+            }
         } catch (error) {
             console.error("Error submitting match", error);
-            setSubmitError('Failed to submit match. Please try again.')
         } finally {
             setSubmitLoading(false)
         }
@@ -278,6 +286,11 @@ function PostMatch() {
                             {submitError && (
                                 <div style={{ color: 'red' }}>
                                     {submitError}
+                                </div>
+                            )}
+                            {submitSuccess && (
+                                <div style={{ color: 'green' }}>
+                                    <Typography>Match was submitted successfully.</Typography>
                                 </div>
                             )}
                         </Grid>
