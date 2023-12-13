@@ -11,6 +11,7 @@ import EditMatch from './pages/editmatch'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { Footer } from './components/Footer'
 import { SignInModal } from './components/SignInModal'
+import EditCourse from './pages/editcourse'
 
 
 const theme = createTheme({
@@ -68,6 +69,7 @@ function App() {
           <Route path='/postmatch' Component={PostMatch} />
           <Route path='/new' Component={New} />
           <Route path='/editmatch/:matchId' Component={EditMatch} />
+          <Route path='/editcourse' Component={EditCourse} />
         </Routes>
         <Footer />
       </Router>

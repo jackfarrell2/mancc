@@ -6,25 +6,23 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { YardageInput } from '../components/YardageInput'
 import { ParInput } from '../components/ParInput'
 import { HandicapInput } from '../components/HandicapInput'
-import { Link } from 'react-router-dom'
 
-function New() {
+function EditCourse() {
 
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const [loading, setLoading] = React.useState(false)
     const [courses, setCourses] = React.useState([])
     const [course, setCourse] = React.useState('')
     const [tee, setTee] = React.useState('')
-    const teeOptions = ['White', 'Blue', 'Red']
+    const [teeOptions, setTeeOptions] = React.useState(['White', 'Blue', 'Red'])
     const [yardages, setYardages] = React.useState(Array(18).fill(0))
     const [handicaps, setHandicaps] = React.useState(Array(18).fill(0))
     const [pars, setPars] = React.useState(Array(18).fill(0))
     const [slope, setSlope] = React.useState('')
     const [courseRating, setCourseRating] = React.useState('')
     const [submitError, setSubmitError] = React.useState('')
-    const [submitOption, setSubmitOption] = React.useState('tees')
-    const [newCourseName, setNewCourseName] = React.useState('')
     const [isSuccess, setIsSuccess] = React.useState(false)
+    const [allCourseInfo, setAllCourseInfo] = React.useState({})
 
     React.useEffect(() => {
         setLoading(true)
@@ -53,12 +51,48 @@ function New() {
 
     }, []);
 
-    function handleCourseChange(courseName) {
-        setCourse(courseName)
+    const handleCourseChange = async (courseName) => {
+        setLoading(true);
+        setTee('')
+        setSlope('')
+        setCourseRating('')
+        setYardages(Array(18).fill(0))
+        setHandicaps(Array(18).fill(0))
+        setPars(Array(18).fill(0))
+        try {
+            const editCourseUrl = `http://127.0.0.1:8000/api/get-all-course-data/${courseName}/` 
+            const apiResponse = await fetch(editCourseUrl)
+            const apiData = await apiResponse.json();
+            setTeeOptions(apiData.tee_options)
+            const allCourseData = apiData.course_data
+            const newCourseInfo = {}
+            for (let i = 0; i < allCourseData.length; i++) {
+                const tee = allCourseData[i].tee
+                const slope = allCourseData[i].slope
+                const rating = allCourseData[i]['course-rating']
+                const yardages = allCourseData[i]['hole-information'][2]
+                const handicaps = allCourseData[i]['hole-information'][1]
+                const pars = allCourseData[i]['hole-information'][0]
+                const thisCourseInfo = {'slope': slope, 'rating': rating, 'yardages': yardages, 'handicaps': handicaps, 'pars': pars}
+                newCourseInfo[tee] = thisCourseInfo
+            }
+            setAllCourseInfo(newCourseInfo)
+            setCourse(courseName)
+        } catch (error) {
+            console.error('Error fetching course details.', error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     function handleTeeChange(event) {
-        setTee(event.target.value)
+        const newTee = event.target.value
+        setSlope(allCourseInfo[newTee].slope)
+        setCourseRating(allCourseInfo[newTee].rating)
+        setYardages(allCourseInfo[newTee].yardages)
+        setPars(allCourseInfo[newTee].pars)
+        setHandicaps(allCourseInfo[newTee].handicaps)
+        setTee(newTee)
     }
 
     function handleYardageChange(yardage, index) {
@@ -90,36 +124,22 @@ function New() {
         setCourseRating(event.target.value)
     }
 
-    function handleTeesClick() {
-        setSubmitOption('tees')
-    }
-
-    function handleNewCourseClick() {
-        setSubmitOption('course')
-    }
-
-    function handleNewCourseNameChange(event) {
-        setNewCourseName(event.target.value)
-    }
-
-    const handleSubmitCourse = async () => {
+    const handleEditCourse = async () => {
         setLoading(true)
         setSubmitError('')
-        const submitURL = `http://127.0.0.1:8000/api/new/`
+        const submitURL = `http://127.0.0.1:8000/api/editcourse/${course}/${tee}/`
         const requestData = {
             course,
             tee,
             slope,
             courseRating,
-            submitOption,
-            newCourseName,
             yardages: yardages,
             handicaps: handicaps,
             pars: pars,
         }
         try {
             const response = await fetch(submitURL, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -216,37 +236,14 @@ function New() {
             <Box sx={page}>
                 <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={4}>
                     <Grid item xs={12} width="100%">
-                        <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={2}>
-                            <Grid item>
-                                <Typography>Please select if you are adding an entirely new course, just a new set of tees, or you wish to edit an existing course:</Typography>
-                            </Grid>
-                            <Grid item>
-                                <Grid container direction='row' justifyContent="center" alignItems='center' spacing={2}>
-                                    <Grid item>
-                                        <Button variant='contained' color='secondary' onClick={handleTeesClick}>Just New Tees</Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Button variant='contained' color='secondary' onClick={handleNewCourseClick}>New Course</Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Link to="/editcourse">
-                                            <Button variant='contained' color='secondary'>Edit Course</Button>
-                                        </Link>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} width="100%">
                         <Grid container direction="row" justifyContent='flex-start' alignItems='center' spacing={2}>
                             <Grid item xs={12} md={3} lg={3} width="100%">
-                                {(submitOption === 'tees') && <CourseSelect sx={{width: '90%'}} course={course} courses={courses} handleChange={handleCourseChange}/>}
-                                {(submitOption === 'course') && <TextField sx={{width: '90%', minWidth: '200px'}} id='course-name' label='Course Name' variant='standard' onChange={handleNewCourseNameChange} />}
+                                <CourseSelect sx={{width: '90%'}} course={course} courses={courses} handleChange={handleCourseChange} />
                             </Grid>
                             <Grid item xs={12} md={3} lg={3} width="100%">
                                 <FormControl fullWidth id="course-form">
                                     <InputLabel id="tees-select">Tees</InputLabel>
-                                    <Select sx={{maxWidth: '200px'}} label='tees' value={tee} onChange={handleTeeChange}>{teeSelects}</Select>
+                                    <Select sx={{maxWidth: '200px'}} label='tees' value={tee} onChange={handleTeeChange} disabled={!course}>{teeSelects}</Select>
                                 </FormControl>
                             </Grid>
                         </Grid>
@@ -293,7 +290,7 @@ function New() {
                     <Grid item xs={12} width="100%">
                         <Grid container justifyContent='center' alignItems='center' spacing={2}>
                             <Grid item>
-                                <Button variant="contained" onClick={handleSubmitCourse}>Add Course</Button>
+                                <Button variant="contained" onClick={handleEditCourse} disabled={!course || !tee}>Edit Course</Button>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -305,9 +302,9 @@ function New() {
                             )}
                             {isSuccess && (
                                 <div style={{ color: 'green' }}>
-                                    <Typography>Your new course has been submitted!</Typography>
+                                    <Typography>The course has been edited!</Typography>
                                 </div>
-                            )}
+                            )}    
                         </Grid>
                 </Grid>
             </Box>
@@ -315,4 +312,4 @@ function New() {
     }   
 }
 
-export default New
+export default EditCourse;
