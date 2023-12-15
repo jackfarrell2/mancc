@@ -35,7 +35,7 @@ function EditMatch() {
     const [submitSuccess, setSubmitSuccess] = React.useState(false)
     const [deleteSuccess, setDeleteSuccess] = React.useState(false)
     
-    const url = `http://127.0.0.1:8000/api/edit/${matchId}/`
+    const url = `https://www.oldmanchestergolfclub.xyz/api/edit/${matchId}/`
 
     React.useEffect(() => {
         setLoading(true)
@@ -84,7 +84,7 @@ function EditMatch() {
     function handleCourseChange(newCourse) {
         let newTee = 'White' // Default Value
 
-        const apiUrl = `http://127.0.0.1:8000/api/coursedata/${newCourse}/${newTee}/`
+        const apiUrl = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${newCourse}/${newTee}/`
 
         const fetchData = async () => {
             try {
@@ -102,7 +102,7 @@ function EditMatch() {
                 if (data.message === 'fail') {
                     newTee = data.tee[0]
                     // Re-fetch the API with the new tee
-                    const updatedApiUrl = `http://127.0.0.1:8000/api/coursedata/${newCourse}/${newTee}/`;
+                    const updatedApiUrl = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${newCourse}/${newTee}/`;
                     const updatedResponse = await fetch(updatedApiUrl, {
                         method: 'GET',
                         headers: {
@@ -176,7 +176,7 @@ function EditMatch() {
     function handleTeeChange(event) {
         const newTee = event.target.value
         setTee(newTee)
-        const apiUrl = `http://127.0.0.1:8000/api/coursedata/${course}/${newTee}/`
+        const apiUrl = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${course}/${newTee}/`
         const fetchData = async () => {
             try {
                 const response = await fetch(apiUrl, {
@@ -211,7 +211,7 @@ function EditMatch() {
         setDeleteSuccess(false)
         setSubmitSuccess(false)
         setSubmitLoading(true)
-        const submitURL = `http://127.0.0.1:8000/api/edit/${matchId}/`
+        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/edit/${matchId}/`
         const requestData = {
             course,
             tee,
@@ -246,7 +246,7 @@ function EditMatch() {
         setSubmitSuccess(false)
         setDeleteSuccess(false)
         setSubmitLoading(true)
-        const submitURL = `http://127.0.0.1:8000/api/edit/${matchId}/`
+        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/edit/${matchId}/`
         const requestData = {
             course,
             tee,

@@ -34,7 +34,7 @@ function PostMatch() {
     const [submitError, setSubmitError] = React.useState(null)
     const [submitSuccess, setSubmitSuccess] = React.useState()
     
-    const URL = `http://127.0.0.1:8000/api/coursedata/${course}/${tee}/`
+    const URL = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${course}/${tee}/`
     
     React.useEffect(() => {
         setLoading(true)
@@ -104,7 +104,7 @@ function PostMatch() {
         setSubmitLoading(true)
         setSubmitSuccess(false)
         setSubmitError(null)
-        const submitURL = `http://127.0.0.1:8000/api/post/`
+        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/post/`
         const requestData = {
             course,
             tee,

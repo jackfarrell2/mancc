@@ -19,7 +19,7 @@ function Vs() {
     const [error, setError] = React.useState({'error': false, 'message': 'No Error'})
     const [loading, setLoading] = React.useState(false)
 
-    const URL = `http://127.0.0.1:8000/api/vs/${golfers[0]}/${golfers[1]}`
+    const URL = `https://www.oldmanchestergolfclub.xyz/api/vs/${golfers[0]}/${golfers[1]}`
 
     React.useEffect(() => {
         const fetchData = async () => {

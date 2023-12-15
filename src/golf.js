@@ -1,5 +1,5 @@
 function fetchAllData() {
-    const query = 'http://127.0.0.1:8000/api/home'
+    const query = 'https://www.oldmanchestergolfclub.xyz/api/home'
     return window.fetch(query).then(response => response.json())
 
 }

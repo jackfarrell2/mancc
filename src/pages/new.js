@@ -28,7 +28,7 @@ function New() {
 
     React.useEffect(() => {
         setLoading(true)
-        const url = 'http://127.0.0.1:8000/api/new'
+        const url = 'https://www.oldmanchestergolfclub.xyz/api/new'
         const fetchData = async () => {
             try {
                 const response = await fetch(url, {
@@ -105,7 +105,7 @@ function New() {
     const handleSubmitCourse = async () => {
         setLoading(true)
         setSubmitError('')
-        const submitURL = `http://127.0.0.1:8000/api/new/`
+        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/new/`
         const requestData = {
             course,
             tee,

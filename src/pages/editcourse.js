@@ -26,7 +26,7 @@ function EditCourse() {
 
     React.useEffect(() => {
         setLoading(true)
-        const url = 'http://127.0.0.1:8000/api/new'
+        const url = 'https://www.oldmanchestergolfclub.xyz/api/new'
         const fetchData = async () => {
             try {
                 const response = await fetch(url, {
@@ -60,7 +60,7 @@ function EditCourse() {
         setHandicaps(Array(18).fill(0))
         setPars(Array(18).fill(0))
         try {
-            const editCourseUrl = `http://127.0.0.1:8000/api/get-all-course-data/${courseName}/` 
+            const editCourseUrl = `https://www.oldmanchestergolfclub.xyz/api/get-all-course-data/${courseName}/` 
             const apiResponse = await fetch(editCourseUrl)
             const apiData = await apiResponse.json();
             setTeeOptions(apiData.tee_options)
@@ -127,7 +127,7 @@ function EditCourse() {
     const handleEditCourse = async () => {
         setLoading(true)
         setSubmitError('')
-        const submitURL = `http://127.0.0.1:8000/api/editcourse/${course}/${tee}/`
+        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/editcourse/${course}/${tee}/`
         const requestData = {
             course,
             tee,

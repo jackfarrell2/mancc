@@ -5,7 +5,7 @@ import { StatTable } from '../components/StatTable'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { MinimizedStatTable } from '../components/MinimizedStatTable'
 
-const URL = 'http://127.0.0.1:8000/api/home'
+const URL = 'https://www.oldmanchestergolfclub.xyz/api/home'
 
 
 function Home() {

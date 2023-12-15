@@ -21,7 +21,7 @@ function Golfers() {
     const [error, setError] = React.useState({'error': false, 'message': 'No Error'})
     const [loading, setLoading] = React.useState(false)
 
-    const URL = `http://127.0.0.1:8000/api/golfer/${golfer}`
+    const URL = `https://www.oldmanchestergolfclub.xyz/api/golfer/${golfer}`
     
     React.useEffect(() => {
         const fetchData = async () => {
