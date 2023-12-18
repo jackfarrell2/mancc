@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+# Golf App Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+Welcome to MGC! This app allows users to upload, compare, and analyze their golf rounds. You can manage rounds, courses, and view various statistics.
 
-In the project directory, you can run:
+This is the front-end. If you are looking for the back-end please navigate to the "mgc" project: [GitHub Repository](https://github.com/jackfarrell2/mgc).
 
-### `npm start`
+Check out the deployed project at [Manchester Golf Club](https://manchestergolfclub.com).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Homepage
 
-### `npm test`
+- The homepage provides general statistics for all golfers. This page excludes solo rounds (rounds played alone).
+- Users can view overall performance metrics such as par 3 averages and birdies per round.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Post a Match Page
 
-### `npm run build`
+- Upload your golf rounds to track your progress.
+- If a course does not exist you can add a course from here.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Vs Page
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Compare statistics and records between two golfers.
+- Gain insights into head-to-head performances.
+- This page will only include rounds where the two golfers were submitted on the same scorecard.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Courses Page
 
-### `npm run eject`
+- View golfer statistics on individual courses.
+- Explore averages on each hole for better course management.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Usage
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Upload Rounds
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+To upload a round, follow these steps:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Navigate to the "Post a Match" section.
+2. Fill in the required information: date, course, scores, etc.
+3. If a course needs to be added or edited, click the plus button next to the course name dropdown menu.
+4. Submit the round to save your data.
 
-## Learn More
+### Edit Rounds
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To edit a round:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Find the round you wish to edit either in the "Golfers" page, the "VS" page, or the "Courses" page.
+2. Select "Edit Round" to edit the round you wish to modify.
+3. Update the necessary information.
+4. Save your changes.
 
-### Code Splitting
+### Vs Page
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To compare two golfers:
 
-### Analyzing the Bundle Size
+1. Navigate to the "Vs" page.
+2. Choose the golfers you want to compare.
+3. View detailed statistics and records between the two golfers.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Courses Page
 
-### Making a Progressive Web App
+To explore golfer stats on individual courses:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. Navigate to the "Courses" page.
+2. Select a golfer and a specific course.
+3. Analyze averages on each hole for strategic improvements.
 
-### Advanced Configuration
+## Additional Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **New Courses:** Add new golf courses to expand the app's database.
+- **Edit Courses:** Modify existing courses to ensure accurate statistics.
