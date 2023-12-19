@@ -39,7 +39,7 @@ function Home() {
             <Box sx={page} justifyContent="center">
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={4}>
                     <Grid item xs={12}>
-                        <Typography>Current Green Jacket Holder: <strong>Nick</strong></Typography>
+                        <Typography>Current Green Jacket Holder: <strong>Jack</strong></Typography>
                     </Grid>
                     <Grid item xs={12}>
                     {isMobile ? (
