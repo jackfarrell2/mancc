@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Box, Grid, Typography, Button, Select, TextField, useMediaQuery, TableCell, InputLabel, FormControl, TableBody, TableContainer, TableHead, TableRow, Paper, Table, MenuItem } from '@mui/material'
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
@@ -28,7 +29,7 @@ function New() {
 
     React.useEffect(() => {
         setLoading(true)
-        const url = 'https://www.oldmanchestergolfclub.xyz/api/new'
+        const url = `${config.apiUrl}api/new`
         const fetchData = async () => {
             try {
                 const response = await fetch(url, {
@@ -105,7 +106,7 @@ function New() {
     const handleSubmitCourse = async () => {
         setLoading(true)
         setSubmitError('')
-        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/new/`
+        const submitURL = `${config.apiUrl}api/new/`
         const requestData = {
             course,
             tee,

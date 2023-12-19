@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Box, Grid, Typography, Button, Select, TextField, useMediaQuery, TableCell, InputLabel, FormControl, TableBody, TableContainer, TableHead, TableRow, Paper, Table, MenuItem } from '@mui/material'
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
@@ -26,7 +27,7 @@ function EditCourse() {
 
     React.useEffect(() => {
         setLoading(true)
-        const url = 'https://www.oldmanchestergolfclub.xyz/api/new'
+        const url = `${config.apiUrl}api/new`
         const fetchData = async () => {
             try {
                 const response = await fetch(url, {
@@ -60,7 +61,7 @@ function EditCourse() {
         setHandicaps(Array(18).fill(0))
         setPars(Array(18).fill(0))
         try {
-            const editCourseUrl = `https://www.oldmanchestergolfclub.xyz/api/get-all-course-data/${courseName}/` 
+            const editCourseUrl = `${config.apiUrl}api/get-all-course-data/${courseName}/` 
             const apiResponse = await fetch(editCourseUrl)
             const apiData = await apiResponse.json();
             setTeeOptions(apiData.tee_options)
@@ -127,7 +128,7 @@ function EditCourse() {
     const handleEditCourse = async () => {
         setLoading(true)
         setSubmitError('')
-        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/editcourse/${course}/${tee}/`
+        const submitURL = `${config.apiUrl}api/editcourse/${course}/${tee}/`
         const requestData = {
             course,
             tee,

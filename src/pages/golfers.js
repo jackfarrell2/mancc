@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Box, Grid, useMediaQuery, Pagination } from "@mui/material"
 import { page } from '../styles/classes'
 import { StatTable } from '../components/StatTable'
@@ -21,7 +22,7 @@ function Golfers() {
     const [error, setError] = React.useState({'error': false, 'message': 'No Error'})
     const [loading, setLoading] = React.useState(false)
 
-    const URL = `https://www.oldmanchestergolfclub.xyz/api/golfer/${golfer}`
+    const URL = `${config.apiUrl}api/golfer/${golfer}`
     
     React.useEffect(() => {
         const fetchData = async () => {

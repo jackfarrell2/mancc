@@ -1,11 +1,12 @@
 import * as React from 'react'
+import config from '../config'
 import { Typography, Box, Grid, useMediaQuery } from "@mui/material"
 import { page } from '../styles/classes'
 import { StatTable } from '../components/StatTable'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { MinimizedStatTable } from '../components/MinimizedStatTable'
 
-const URL = 'https://www.oldmanchestergolfclub.xyz/api/home'
+const URL = `${config.apiUrl}api/home`
 
 
 function Home() {

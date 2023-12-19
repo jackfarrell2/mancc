@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem, Typography } from "@mui/material"
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
@@ -34,7 +35,7 @@ function PostMatch() {
     const [submitError, setSubmitError] = React.useState(null)
     const [submitSuccess, setSubmitSuccess] = React.useState()
     
-    const URL = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${course}/${tee}/`
+    const URL = `${config.apiUrl}api/coursedata/${course}/${tee}/`
     
     React.useEffect(() => {
         setLoading(true)
@@ -104,7 +105,7 @@ function PostMatch() {
         setSubmitLoading(true)
         setSubmitSuccess(false)
         setSubmitError(null)
-        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/post/`
+        const submitURL = `${config.apiUrl}api/post/`
         const requestData = {
             course,
             tee,

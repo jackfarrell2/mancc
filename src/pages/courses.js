@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Grid, Box, Tabs, Tab, Pagination, useMediaQuery, } from "@mui/material"
 import { page } from '../styles/classes'
 import { GolferSelect } from "../components/GolferSelect"
@@ -28,7 +29,7 @@ function Courses() {
     const [avgScorecard, setAvgScorecard] = React.useState(null)
     const [error, setError] = React.useState({'error': false, 'message': 'No Error'})
 
-    const URL = `https://www.oldmanchestergolfclub.xyz/api/courses/${course}/${tee}/${golfer}`
+    const URL = `${config.apiUrl}api/courses/${course}/${tee}/${golfer}`
 
 
     React.useEffect(() => {

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Box, Grid, useMediaQuery, TableCell, TableContainer, Paper, Table, TableRow, TableBody, TableHead, Button, IconButton, Select, MenuItem, Typography } from "@mui/material"
 import { page } from '../styles/classes'
 import { CourseSelect } from '../components/CourseSelect'
@@ -35,7 +36,7 @@ function EditMatch() {
     const [submitSuccess, setSubmitSuccess] = React.useState(false)
     const [deleteSuccess, setDeleteSuccess] = React.useState(false)
     
-    const url = `https://www.oldmanchestergolfclub.xyz/api/edit/${matchId}/`
+    const url = `${config.apiUrl}api/edit/${matchId}/`
 
     React.useEffect(() => {
         setLoading(true)
@@ -85,7 +86,7 @@ function EditMatch() {
     function handleCourseChange(newCourse) {
         let newTee = 'White' // Default Value
 
-        const apiUrl = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${newCourse}/${newTee}/`
+        const apiUrl = `${config.apiUrl}api/coursedata/${newCourse}/${newTee}/`
 
         const fetchData = async () => {
             try {
@@ -103,7 +104,7 @@ function EditMatch() {
                 if (data.message === 'fail') {
                     newTee = data.tee[0]
                     // Re-fetch the API with the new tee
-                    const updatedApiUrl = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${newCourse}/${newTee}/`;
+                    const updatedApiUrl = `${config.apiUrl}api/coursedata/${newCourse}/${newTee}/`;
                     const updatedResponse = await fetch(updatedApiUrl, {
                         method: 'GET',
                         headers: {
@@ -177,7 +178,7 @@ function EditMatch() {
     function handleTeeChange(event) {
         const newTee = event.target.value
         setTee(newTee)
-        const apiUrl = `https://www.oldmanchestergolfclub.xyz/api/coursedata/${course}/${newTee}/`
+        const apiUrl = `${config.apiUrl}api/coursedata/${course}/${newTee}/`
         const fetchData = async () => {
             try {
                 const response = await fetch(apiUrl, {
@@ -212,7 +213,7 @@ function EditMatch() {
         setDeleteSuccess(false)
         setSubmitSuccess(false)
         setSubmitLoading(true)
-        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/edit/${matchId}/`
+        const submitURL = `${config.apiUrl}api/edit/${matchId}/`
         const requestData = {
             course,
             tee,
@@ -247,7 +248,7 @@ function EditMatch() {
         setSubmitSuccess(false)
         setDeleteSuccess(false)
         setSubmitLoading(true)
-        const submitURL = `https://www.oldmanchestergolfclub.xyz/api/edit/${matchId}/`
+        const submitURL = `${config.apiUrl}api/edit/${matchId}/`
         const requestData = {
             course,
             tee,

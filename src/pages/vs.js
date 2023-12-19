@@ -1,4 +1,5 @@
 import * as React from 'react'
+import config from '../config'
 import { Grid, Box, useMediaQuery, Pagination } from "@mui/material"
 import { page } from '../styles/classes'
 import { CompareHeader } from '../components/CompareHeader'
@@ -19,7 +20,7 @@ function Vs() {
     const [error, setError] = React.useState({'error': false, 'message': 'No Error'})
     const [loading, setLoading] = React.useState(false)
 
-    const URL = `https://www.oldmanchestergolfclub.xyz/api/vs/${golfers[0]}/${golfers[1]}`
+    const URL = `${config.apiUrl}api/vs/${golfers[0]}/${golfers[1]}`
 
     React.useEffect(() => {
         const fetchData = async () => {
