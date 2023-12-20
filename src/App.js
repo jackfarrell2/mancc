@@ -8,6 +8,7 @@ import PostMatch from './pages/postmatch'
 import New from './pages/new'
 import Vs from './pages/vs'
 import EditMatch from './pages/editmatch'
+import NotFound from './pages/notfound'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { Footer } from './components/Footer'
 import { SignInModal } from './components/SignInModal'
@@ -70,6 +71,7 @@ function App() {
           <Route path='/new' Component={New} />
           <Route path='/editmatch/:matchId' Component={EditMatch} />
           <Route path='/editcourse' Component={EditCourse} />
+          <Route path='*' Component={NotFound} />
         </Routes>
         <Footer />
       </Router>
