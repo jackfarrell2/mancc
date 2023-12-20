@@ -11,7 +11,7 @@ echo -e "\n>>> Copying files to the server."
 ssh root@$SERVER "rm -rf /root/mancc"
 ssh root@$SERVER "mkdir mancc"
 scp -r build/* root@$SERVER:/root/mancc
-echo -e "\n Copied files to the server"
+echo -e "\nCopied files to the server"
 
 
 ssh root@$SERVER /bin/bash << EOF
