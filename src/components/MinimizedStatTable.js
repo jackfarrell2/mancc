@@ -34,16 +34,7 @@ function MinimizedStatTable({golfer_data}) {
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
 
-    React.useEffect(() => {
-        const handleRowClick = (golferName) => {
-        navigate(`/golfers/${golferName}`);
-        };
-
-        rows.forEach((row) => {
-        row.onClick = () => handleRowClick(row.original.Golfer);
-        });
-    }, [navigate, rows]);
-
+    
     return (
         <div>
             <table className="main-table" {...getTableProps()}>
@@ -65,7 +56,7 @@ function MinimizedStatTable({golfer_data}) {
                         rows.map((row, i) => {
                             prepareRow(row)
                             return (
-                                <tr key={i} {...row.getRowProps()} onClick={row.onClick} style={{cursor: 'pointer'}}>
+                                <tr key={i} {...row.getRowProps()} onClick={() => navigate(`/golfers/${row.original.Golfer}`)} style={{cursor: 'pointer'}}>
                                     {
                                         row.cells.map((cell, i) => {
                                             return <td key={i} {...cell.getCellProps}>{cell.render('Cell')}</td>
