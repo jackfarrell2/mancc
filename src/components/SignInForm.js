@@ -4,8 +4,8 @@ import { Avatar, Button, TextField, FormControlLabel, Checkbox, Box, Grid, Typog
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 
-function SignInForm({handleClose, onSubmit, setOpenModal, openModal}) {
-
+function SignInForm({handleClose, onSubmit, setOpenModal, openModal, submitted}) {
+  const message = "We aren't accepting new club members."
   const [checked, setChecked] = React.useState(false)
   const handleCheck = () => setChecked(!checked)
 
@@ -153,6 +153,11 @@ function SignInForm({handleClose, onSubmit, setOpenModal, openModal}) {
               >
                 {buttonText}
               </Button>
+              <Grid container direction='row' justifyContent='center' alignItems='center'>
+                <Grid item>
+                  {submitted && (<Typography variant='caption' color='error'>{message}</Typography>)}
+                </Grid>
+              </Grid>
               <Grid container>
                 <Grid item xs>
                   {(openModal !== 'forgot') && (

@@ -43,23 +43,11 @@ function App() {
   const handleOpen = () => setOpenModal('sign-in')
   const handleClose = () => setOpenModal('none')
 
-  function submit(formData) {
-    if (openModal === 'sign-in') {
-      console.log('Signin', formData)
-    } else if (openModal === 'signup') {
-      console.log('Signup', formData)
-    } else if (openModal === 'forgot') {
-      console.log('forgot', formData)
-    } else {
-      throw new Error('This should not be possible.')
-    }
-  
-  }
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <SignInModal openModal={openModal} handleClose={handleClose} submit={submit} setOpenModal={setOpenModal}/>
+      <SignInModal openModal={openModal} handleClose={handleClose} setOpenModal={setOpenModal} />
       <Router>
         <Navbar handleOpen={handleOpen}/>
         <Routes>
